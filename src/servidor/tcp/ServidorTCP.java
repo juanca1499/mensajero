@@ -10,8 +10,7 @@ public class ServidorTCP{
     }
     
     public void inicia()throws Exception{
-        ServidorEscuchaTCP servidorTCP=new ServidorEscuchaTCP(PUERTO_SERVER);
-        
-        servidorTCP.start();
+        //ServidorEscuchaTCP servidorTCP=new ServidorEscuchaTCP(PUERTO_SERVER);
+        //servidorTCP.start();
     }
 }

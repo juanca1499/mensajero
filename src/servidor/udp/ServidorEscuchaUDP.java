@@ -1,5 +1,8 @@
 package servidor.udp;
 
+import cliente.interfaces.ReceptorMensaje;
+import cliente.mensajes.ReceptorMensajeServidor;
+
 import java.net.*;
 import java.io.*;
 
@@ -14,12 +17,15 @@ public class ServidorEscuchaUDP extends Thread{
     protected DatagramPacket paquete;
     protected byte[] mensaje_bytes;
     protected DatagramPacket envPaquete;
+    private ReceptorMensaje receptorMensaje;
     
-    public ServidorEscuchaUDP(int puertoS) throws Exception{
+    public ServidorEscuchaUDP(int puertoS, ReceptorMensaje receptorMensaje) throws Exception{
         //Creamos el socket
         PUERTO_SERVER=puertoS;
         socket = new DatagramSocket(puertoS);
+        this.receptorMensaje = receptorMensaje;
     }
+
     public void run() {
         try {
             
@@ -39,8 +45,7 @@ public class ServidorEscuchaUDP extends Thread{
                 mensaje = new String(mensaje_bytes,0,paquete.getLength()).trim();
                 
                 // Lo mostramos por pantalla
-                System.out.println("Mensaje recibido \""+mensaje+"\" del cliente "+
-                        paquete.getAddress()+"#"+paquete.getPort());
+                receptorMensaje.recibirMensaje(mensaje);
                 
                 //Obtenemos IP Y PUERTO
                 puertoCliente = paquete.getPort();

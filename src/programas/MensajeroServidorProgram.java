@@ -4,7 +4,7 @@ import gui.MensajeroGUI;
 import servidor.gui.MensajeroServidorGUI;
 
 public class MensajeroServidorProgram {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         MensajeroGUI ventanaMensajero = new MensajeroServidorGUI();
         ventanaMensajero.setVisible(true);
     }

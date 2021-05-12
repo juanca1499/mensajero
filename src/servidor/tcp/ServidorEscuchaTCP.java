@@ -1,5 +1,8 @@
 package servidor.tcp;
 
+import cliente.interfaces.ReceptorMensaje;
+import cliente.mensajes.ReceptorMensajeServidor;
+
 import java.net.*;
 //importar la libreria java.net
  
@@ -13,11 +16,13 @@ public class ServidorEscuchaTCP extends Thread {
     protected DataInputStream in;
     protected Socket socket_cli;
     protected final int PUERTO_SERVER;
+    private ReceptorMensaje receptorMensaje;
     
-    public ServidorEscuchaTCP(int puertoS)throws Exception{
+    public ServidorEscuchaTCP(int puertoS, ReceptorMensaje receptorMensaje) throws Exception {
         PUERTO_SERVER=puertoS;
         // Instanciamos un ServerSocket con la dirección del destino y el
         // puerto que vamos a utilizar para la comunicación
+        this.receptorMensaje = receptorMensaje;
 
         socket = new ServerSocket(PUERTO_SERVER);
     }
@@ -40,7 +45,7 @@ public class ServidorEscuchaTCP extends Thread {
             do {
                 String mensaje ="";
                 mensaje = in.readUTF();
-                System.out.println(mensaje);
+                receptorMensaje.recibirArchivo(mensaje.getBytes());
             } while (true);
         }
         // utilizamos el catch para capturar los errores que puedan surgir

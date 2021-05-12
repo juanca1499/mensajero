@@ -1,10 +1,12 @@
 package cliente.udp;
 
+import cliente.interfaces.ReceptorMensaje;
+
 import java.net.*;
 import java.io.*;
  
 //declaramos la clase udp escucha
-public class ClienteEscuchaUDP extends Thread{
+public class ClienteEscuchaUDP extends Thread {
     protected BufferedReader in;
     //Definimos el sockets, número de bytes del buffer, y mensaje.
     protected final int MAX_BUFFER=256;
@@ -12,17 +14,19 @@ public class ClienteEscuchaUDP extends Thread{
     protected DatagramSocket socket;
     protected InetAddress address;
     protected DatagramPacket servPaquete;
+    private ReceptorMensaje receptorMensaje;
     //protected String SERVER;
     
-    public ClienteEscuchaUDP(DatagramSocket socketNuevo){
+    public ClienteEscuchaUDP(DatagramSocket socketNuevo, ReceptorMensaje receptorMensaje){
         socket=socketNuevo;
         //SERVER=servidor;
         PUERTO_CLIENTE=socket.getLocalPort();
+        this.receptorMensaje = receptorMensaje;
     }
     public void run() {
-        byte[] mensaje_bytes;
+
         String mensaje="";
-        mensaje_bytes=mensaje.getBytes();
+        byte[] mensaje_bytes=mensaje.getBytes();
         
         String cadenaMensaje="";
 
@@ -38,11 +42,11 @@ public class ClienteEscuchaUDP extends Thread{
 
                 //Convertimos el mensaje recibido en un string
                 cadenaMensaje = new String(recogerServidor_bytes).trim();
-
+                receptorMensaje.recibirMensaje(cadenaMensaje);
                 //Imprimimos el paquete recibido
-                System.out.println("Mensaje recibido \""+cadenaMensaje +"\" de "+
-                        servPaquete.getAddress()+"#"+servPaquete.getPort());
-            } while (!cadenaMensaje.startsWith("fin"));
+                //System.out.println("Mensaje recibido \""+cadenaMensaje +"\" de "+
+                  //      servPaquete.getAddress()+"#"+servPaquete.getPort());
+            } while (true);
         }
         catch (Exception e) {
             e.printStackTrace();

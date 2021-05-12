@@ -1,16 +1,17 @@
 package servidor.gui;
 
-import cliente.gui.MensajeroClienteGUI;
 import cliente.interfaces.EnviadorMensaje;
-import cliente.mensajes.EnviadorMensajeCliente;
+import cliente.interfaces.ImpresoraChat;
+import cliente.interfaces.ReceptorMensaje;
+import cliente.mensajes.ImpresoraChatEscritorio;
 import cliente.mensajes.MensajeTexto;
-import cliente.tcp.ClienteTCP;
-import cliente.udp.ClienteUDP;
+import cliente.mensajes.ReceptorMensajeServidor;
 import gui.MensajeroGUI;
+import servidor.ConexionServidor;
+import servidor.Servidor;
+import servidor.mensajes.EnviadorMensajeServidor;
 
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,10 +20,15 @@ public class MensajeroServidorGUI extends MensajeroGUI {
 
     private JTextArea txtAreaMensajes;
 
-    public MensajeroServidorGUI() {
+    private ImpresoraChat impresora;
+    private Servidor servidor;
+
+    public MensajeroServidorGUI() throws Exception {
         this.cargarComponentes();
         this.agregarEventos();
         this.inicializarServicios();
+        impresora = new ImpresoraChatEscritorio(txtAreaMensajes);
+        servidor = new Servidor(impresora);
     }
 
     protected void cargarComponentes() {
@@ -48,7 +54,6 @@ public class MensajeroServidorGUI extends MensajeroGUI {
     }
 
     protected void inicializarServicios() {
-        // Code
     }
 
     private class EnviarMensaje implements ActionListener {
@@ -57,7 +62,7 @@ public class MensajeroServidorGUI extends MensajeroGUI {
             if(!archivoAdjunto) {
                 String texto = txtAreaMensaje.getText();
                 MensajeTexto mensaje = new MensajeTexto("Cliente1","Cliente2",texto);
-                enviadorMensaje.enviarMensaje(mensaje);
+                servidor.enviarMensaje(mensaje);
             } else {
                 // Missing code
                 archivoAdjunto = false;

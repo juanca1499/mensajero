@@ -1,16 +1,24 @@
 package cliente.gui;
 
-import cliente.mensajes.EnviadorMensajeCliente;
-import cliente.mensajes.MensajeTexto;
+import cliente.Cliente;
+import cliente.ConexionCliente;
+import cliente.interfaces.ImpresoraChat;
+import cliente.mensajes.*;
+import cliente.tcp.ClienteEnviaTCP;
 import cliente.tcp.ClienteTCP;
+import cliente.udp.ClienteEnviaUDP;
+import cliente.udp.ClienteEscuchaUDP;
 import cliente.udp.ClienteUDP;
 import gui.MensajeroGUI;
+import servidor.ConexionServidor;
+import servidor.Servidor;
+import sun.reflect.annotation.ExceptionProxy;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.DatagramSocket;
 
 public class MensajeroClienteGUI extends MensajeroGUI {
 
@@ -18,10 +26,17 @@ public class MensajeroClienteGUI extends MensajeroGUI {
     private JTextArea txtAreaMensajesPropios;
     private JTextArea txtAreaMensajesExternos;
 
-    public MensajeroClienteGUI() throws Exception {
+    private ImpresoraChat impresora;
+
+    private Cliente cliente;
+    private ConexionServidor conServidor;
+
+    public MensajeroClienteGUI(ConexionServidor conServidor) throws Exception {
+        this.conServidor = conServidor;
         this.cargarComponentes();
         this.agregarEventos();
         this.inicializarServicios();
+        impresora = new ImpresoraChatEscritorio(txtAreaMensajesExternos);
     }
 
     protected void cargarComponentes() {
@@ -55,19 +70,21 @@ public class MensajeroClienteGUI extends MensajeroGUI {
         btnEnviarMensaje.addActionListener(new EnviarMensaje());
     }
 
-    protected void inicializarServicios() {
-        enviadorMensaje = new EnviadorMensajeCliente(
-                new ClienteUDP("192.168.0.15",50000),
-                new ClienteTCP("192.168.0.15",60000));
+    protected void inicializarServicios() throws Exception {
+        cliente = new Cliente(conServidor,"Juca",impresora);
     }
 
     private class EnviarMensaje implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             if(!archivoAdjunto) {
+                lblStatus.setText("Enviando mensaje...");
                 String texto = txtAreaMensaje.getText();
                 MensajeTexto mensaje = new MensajeTexto("Cliente1","Cliente2",texto);
-                enviadorMensaje.enviarMensaje(mensaje);
+                cliente.enviarMensaje(mensaje);
+                lblStatus.setText("Listo");
+                txtAreaMensaje.setText("");
+                txtAreaMensajesPropios.append("\n" + mensaje);
             } else {
                 // Missing code
                 archivoAdjunto = false;
@@ -75,5 +92,9 @@ public class MensajeroClienteGUI extends MensajeroGUI {
                 lblStatus.setText("Listo");
             }
         }
+    }
+
+    public JTextArea getCajaMensajes() {
+        return txtAreaMensajesExternos;
     }
 }

@@ -11,5 +11,18 @@ public abstract class Mensaje {
     public Mensaje(String origen, String destino) {
         this.origen = origen;
         this.destino = destino;
+        this.fecha = new Date();
+    }
+
+    public String getOrigen() {
+        return origen;
+    }
+
+    public String getDestino() {
+        return destino;
+    }
+
+    public Date getFecha() {
+        return fecha;
     }
 }

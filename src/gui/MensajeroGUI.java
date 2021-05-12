@@ -1,6 +1,7 @@
 package gui;
 
 import cliente.interfaces.EnviadorMensaje;
+import cliente.interfaces.ReceptorMensaje;
 import cliente.mensajes.EnviadorMensajeCliente;
 import cliente.mensajes.MensajeTexto;
 import cliente.tcp.ClienteTCP;
@@ -39,8 +40,6 @@ public abstract class MensajeroGUI extends JFrame {
     protected Icon iconAdjuntarArchivo;
 
     protected boolean archivoAdjunto;
-
-    protected EnviadorMensaje enviadorMensaje;
 
     public MensajeroGUI() {
         super("Mensajero Fenix");
@@ -96,7 +95,7 @@ public abstract class MensajeroGUI extends JFrame {
         btnAdjuntarArchivo.addActionListener(new SelectorArchivo());
     }
 
-    protected abstract void inicializarServicios();
+    protected abstract void inicializarServicios() throws Exception;
 
     private class SelectorArchivo implements ActionListener {
         @Override

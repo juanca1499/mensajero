@@ -15,7 +15,11 @@ public class ImpresoraChatEscritorio implements ImpresoraChat {
     @Override
     public void imprimirMensaje(Mensaje mensaje) {
         if (mensaje instanceof MensajeTexto) {
-           chat.append(mensaje.toString());
+            MensajeTexto msjTexto = (MensajeTexto) mensaje;
+            chat.append("\n[" + msjTexto.getOrigen() + "]" );
+            chat.append("\n" + msjTexto.toString());
+        } else if (mensaje instanceof MensajeArchivo) {
+            // Code
         }
     }
 }

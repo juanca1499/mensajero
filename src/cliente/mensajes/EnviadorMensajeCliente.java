@@ -1,26 +1,26 @@
 package cliente.mensajes;
 
 import cliente.interfaces.EnviadorMensaje;
-import cliente.tcp.ClienteTCP;
-import cliente.udp.ClienteUDP;
+import cliente.tcp.ClienteEnviaTCP;
+import cliente.udp.ClienteEnviaUDP;
 
 public class EnviadorMensajeCliente implements EnviadorMensaje {
 
-    private ClienteUDP clienteUDP;
-    private ClienteTCP clienteTCP;
+    private ClienteEnviaUDP clienteEnviaUDP;
+    private ClienteEnviaTCP clienteEnviaTCP;
 
-    public EnviadorMensajeCliente(ClienteUDP clienteUDP, ClienteTCP clienteTCP) {
-        this.clienteUDP = clienteUDP;
-        this.clienteTCP = clienteTCP;
+    public EnviadorMensajeCliente(ClienteEnviaUDP clienteEnviaUDP, ClienteEnviaTCP clienteEnviaTCP) {
+        this.clienteEnviaUDP = clienteEnviaUDP;
+        this.clienteEnviaTCP = clienteEnviaTCP;
     }
 
     @Override
     public void enviarMensaje(MensajeTexto mensaje) {
-
+        clienteEnviaUDP.enviar(mensaje.toString());
     }
 
     @Override
     public void enviarArchivo(MensajeArchivo archivo) {
-
+        //clienteEnviaTCP.run();
     }
 }
