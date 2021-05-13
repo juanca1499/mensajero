@@ -16,7 +16,7 @@ public class EnviadorMensajeCliente implements EnviadorMensaje {
 
     @Override
     public void enviarMensaje(MensajeTexto mensaje) {
-        clienteEnviaUDP.enviar(mensaje.toString());
+        clienteEnviaUDP.enviar(mensaje);
     }
 
     @Override

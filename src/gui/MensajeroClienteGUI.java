@@ -1,24 +1,15 @@
-package cliente.gui;
+package gui;
 
-import cliente.Cliente;
-import cliente.ConexionCliente;
+import cliente.interfaces.EnviadorMensaje;
 import cliente.interfaces.ImpresoraChat;
 import cliente.mensajes.*;
-import cliente.tcp.ClienteEnviaTCP;
-import cliente.tcp.ClienteTCP;
-import cliente.udp.ClienteEnviaUDP;
-import cliente.udp.ClienteEscuchaUDP;
-import cliente.udp.ClienteUDP;
 import gui.MensajeroGUI;
-import servidor.ConexionServidor;
-import servidor.Servidor;
-import sun.reflect.annotation.ExceptionProxy;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.DatagramSocket;
+import java.io.File;
 
 public class MensajeroClienteGUI extends MensajeroGUI {
 
@@ -26,24 +17,22 @@ public class MensajeroClienteGUI extends MensajeroGUI {
     private JTextArea txtAreaMensajesPropios;
     private JTextArea txtAreaMensajesExternos;
 
-    private ImpresoraChat impresora;
+    private String usuario;
 
-    private Cliente cliente;
-    private ConexionServidor conServidor;
+    private EnviadorMensaje enviador;
 
-    public MensajeroClienteGUI(ConexionServidor conServidor) throws Exception {
-        this.conServidor = conServidor;
+    public MensajeroClienteGUI(String usuario, EnviadorMensaje enviador)  {
+        this.usuario = usuario;
+        this.enviador = enviador;
         this.cargarComponentes();
         this.agregarEventos();
-        this.inicializarServicios();
-        impresora = new ImpresoraChatEscritorio(txtAreaMensajesExternos);
     }
 
     protected void cargarComponentes() {
         super.cargarComponentes();
         panelSuperior = new JPanel(new BorderLayout());
         panelSuperior.setBorder(bordePanel);
-        lblUsuario = new JLabel("Cliente");
+        lblUsuario = new JLabel("Cliente:" + usuario);
         lblUsuario.setFont(fuente);
         panelSuperior.add(lblUsuario,BorderLayout.LINE_START);
         btnVideollamada = new JButton(iconVideollamada);
@@ -70,23 +59,29 @@ public class MensajeroClienteGUI extends MensajeroGUI {
         btnEnviarMensaje.addActionListener(new EnviarMensaje());
     }
 
-    protected void inicializarServicios() throws Exception {
-        cliente = new Cliente(conServidor,"Juca",impresora);
-    }
-
     private class EnviarMensaje implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             if(!archivoAdjunto) {
-                lblStatus.setText("Enviando mensaje...");
                 String texto = txtAreaMensaje.getText();
-                MensajeTexto mensaje = new MensajeTexto("Cliente1","Cliente2",texto);
-                cliente.enviarMensaje(mensaje);
-                lblStatus.setText("Listo");
+                MensajeTexto mensaje = new MensajeTexto(texto);
+                enviador.enviarMensaje(mensaje);
                 txtAreaMensaje.setText("");
                 txtAreaMensajesPropios.append("\n" + mensaje);
             } else {
-                // Missing code
+//                String ruta = lblStatus.getText();
+//                String nuevaRuta = "";
+//                for(int index = 0; index < ruta.length(); index++) {
+//                    char token = ruta.charAt(index);
+//                    if(token == '\\') {
+//                        nuevaRuta += "\\";
+//                    } else {
+//                        nuevaRuta += token;
+//                    }
+//                }
+                String nuevaRuta = "C:\\Users\\karlo\\Desktop\\Hola.txt";
+                MensajeArchivo mensajeArchivo = new MensajeArchivo(new File(nuevaRuta));
+                enviador.enviarArchivo(mensajeArchivo);
                 archivoAdjunto = false;
                 txtAreaMensaje.setEnabled(true);
                 lblStatus.setText("Listo");
@@ -94,7 +89,18 @@ public class MensajeroClienteGUI extends MensajeroGUI {
         }
     }
 
-    public JTextArea getCajaMensajes() {
-        return txtAreaMensajesExternos;
+    @Override
+    public void imprimirMensaje(Mensaje mensaje) {
+        if (mensaje instanceof MensajeTexto) {
+            MensajeTexto msjTexto = (MensajeTexto) mensaje;
+            txtAreaMensajesExternos.append("\n[" + mensaje.getOrigen() + "]");
+            txtAreaMensajesExternos.append("\n<<" + mensaje.getFecha().toString() + ">>");
+            txtAreaMensajesExternos.append("\n" + msjTexto);
+        } else if (mensaje instanceof MensajeArchivo) {
+            MensajeArchivo msjArchivo = (MensajeArchivo) mensaje;
+            txtAreaMensajesExternos.append("\n[" + mensaje.getOrigen() + "]");
+            txtAreaMensajesExternos.append("\n<<" + mensaje.getFecha().toString() + ">>");
+            txtAreaMensajesExternos.append("\n" + "Se recibió un archivo: " + msjArchivo.getArchivo().getAbsolutePath());
+        }
     }
 }

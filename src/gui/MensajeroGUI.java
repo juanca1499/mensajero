@@ -1,8 +1,11 @@
 package gui;
 
 import cliente.interfaces.EnviadorMensaje;
+import cliente.interfaces.ImpresoraChat;
 import cliente.interfaces.ReceptorMensaje;
 import cliente.mensajes.EnviadorMensajeCliente;
+import cliente.mensajes.Mensaje;
+import cliente.mensajes.MensajeArchivo;
 import cliente.mensajes.MensajeTexto;
 import cliente.tcp.ClienteTCP;
 import cliente.udp.ClienteUDP;
@@ -17,7 +20,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public abstract class MensajeroGUI extends JFrame {
+public abstract class MensajeroGUI extends JFrame implements ImpresoraChat {
 
     protected JPanel panelGeneral;
     protected JPanel panelCentral;
@@ -95,8 +98,6 @@ public abstract class MensajeroGUI extends JFrame {
         btnAdjuntarArchivo.addActionListener(new SelectorArchivo());
     }
 
-    protected abstract void inicializarServicios() throws Exception;
-
     private class SelectorArchivo implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -112,4 +113,6 @@ public abstract class MensajeroGUI extends JFrame {
             }
         }
     }
+
+    public abstract void imprimirMensaje(Mensaje mensaje);
 }

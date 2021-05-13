@@ -1,6 +1,7 @@
 package cliente.udp;
 
 import cliente.interfaces.ReceptorMensaje;
+import cliente.mensajes.MensajeTexto;
 
 import java.net.*;
 import java.io.*;
@@ -14,14 +15,14 @@ public class ClienteEscuchaUDP extends Thread {
     protected DatagramSocket socket;
     protected InetAddress address;
     protected DatagramPacket servPaquete;
-    private ReceptorMensaje receptorMensaje;
+    private ReceptorMensaje receptor;
     //protected String SERVER;
     
-    public ClienteEscuchaUDP(DatagramSocket socketNuevo, ReceptorMensaje receptorMensaje){
+    public ClienteEscuchaUDP(DatagramSocket socketNuevo, ReceptorMensaje receptor){
         socket=socketNuevo;
         //SERVER=servidor;
         PUERTO_CLIENTE=socket.getLocalPort();
-        this.receptorMensaje = receptorMensaje;
+        this.receptor = receptor;
     }
     public void run() {
 
@@ -34,18 +35,17 @@ public class ClienteEscuchaUDP extends Thread {
 
         try {
             do {
-                recogerServidor_bytes = new byte[MAX_BUFFER];
-
-                //Esperamos a recibir un paquete
-                servPaquete = new DatagramPacket(recogerServidor_bytes,MAX_BUFFER);
+                // Recibimos el paquete
+                mensaje_bytes=new byte[MAX_BUFFER];
+                servPaquete = new DatagramPacket(mensaje_bytes,MAX_BUFFER);
                 socket.receive(servPaquete);
-
-                //Convertimos el mensaje recibido en un string
-                cadenaMensaje = new String(recogerServidor_bytes).trim();
-                receptorMensaje.recibirMensaje(cadenaMensaje);
-                //Imprimimos el paquete recibido
-                //System.out.println("Mensaje recibido \""+cadenaMensaje +"\" de "+
-                  //      servPaquete.getAddress()+"#"+servPaquete.getPort());
+                ByteArrayInputStream byteStream = new ByteArrayInputStream(mensaje_bytes);
+                ObjectInputStream objectStream = new ObjectInputStream(
+                        new BufferedInputStream(byteStream));
+                Object mensajeTexto = objectStream.readObject();
+                // Lo mostramos por pantalla
+                receptor.recibirMensaje((MensajeTexto) mensajeTexto);
+                objectStream.close();
             } while (true);
         }
         catch (Exception e) {

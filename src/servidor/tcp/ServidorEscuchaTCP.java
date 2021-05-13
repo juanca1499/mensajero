@@ -1,7 +1,6 @@
 package servidor.tcp;
 
 import cliente.interfaces.ReceptorMensaje;
-import cliente.mensajes.ReceptorMensajeServidor;
 
 import java.net.*;
 //importar la libreria java.net
@@ -13,7 +12,8 @@ import java.io.*;
 public class ServidorEscuchaTCP extends Thread {
     // declaramos un objeto ServerSocket para realizar la comunicación
     protected ServerSocket socket;
-    protected DataInputStream in;
+    protected InputStream in;
+    protected OutputStream out;
     protected Socket socket_cli;
     protected final int PUERTO_SERVER;
     private ReceptorMensaje receptorMensaje;
@@ -23,7 +23,6 @@ public class ServidorEscuchaTCP extends Thread {
         // Instanciamos un ServerSocket con la dirección del destino y el
         // puerto que vamos a utilizar para la comunicación
         this.receptorMensaje = receptorMensaje;
-
         socket = new ServerSocket(PUERTO_SERVER);
     }
     // método principal main de la clase
@@ -37,16 +36,18 @@ public class ServidorEscuchaTCP extends Thread {
             // Declaramos e instanciamos el objeto DataInputStream
             // que nos valdrá para recibir datos del cliente
 
-            in =new DataInputStream(socket_cli.getInputStream());
+            in = socket_cli.getInputStream();
+            out = new FileOutputStream("D:\\Users\\karlo\\Downloads\\prueba.txt");
+            //MensajeArchivo mensajeArchivo = new MensajeArchivo("?","?",new File("Prueba.txt"));
+            //receptorMensaje.recibirArchivo(mensajeArchivo);
 
-            // Creamos un bucle do while en el que recogemos el mensaje
-            // que nos ha enviado el cliente y después lo mostramos
-            // por consola
-            do {
-                String mensaje ="";
-                mensaje = in.readUTF();
-                receptorMensaje.recibirArchivo(mensaje.getBytes());
-            } while (true);
+            byte[] bytes = new byte[16 * 1024];
+            int contador;
+            while ((contador = in.read(bytes)) > 0) {
+                out.write(bytes, 0, contador);
+            }
+            in.close();
+            out.close();
         }
         // utilizamos el catch para capturar los errores que puedan surgir
         catch (Exception e) {

@@ -1,11 +1,22 @@
 package cliente.mensajes;
 
-public class MensajeArchivo extends Mensaje {
+import java.io.File;
+import java.io.Serializable;
 
-    protected byte[] archivoBytes;
+public class MensajeArchivo extends Mensaje implements Serializable {
 
-    public MensajeArchivo(String origen, String destino, byte[] archivoBytes) {
+    private File archivo;
+
+    public MensajeArchivo(File archivo) {
+        this.archivo = archivo;
+    }
+
+    public MensajeArchivo(String origen, String destino, File archivo) {
         super(origen, destino);
-        this.archivoBytes = archivoBytes;
+        this.archivo = archivo;
+    }
+
+    public File getArchivo() {
+        return archivo;
     }
 }

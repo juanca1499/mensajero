@@ -1,7 +1,7 @@
 package servidor.udp;
 
 import cliente.interfaces.ReceptorMensaje;
-import cliente.mensajes.ReceptorMensajeServidor;
+import cliente.mensajes.MensajeTexto;
 
 import java.net.*;
 import java.io.*;
@@ -28,8 +28,6 @@ public class ServidorEscuchaUDP extends Thread{
 
     public void run() {
         try {
-            
-            String mensaje ="";
             String mensajeComp ="";
                        
             //Iniciamos el bucle
@@ -38,40 +36,39 @@ public class ServidorEscuchaUDP extends Thread{
                 mensaje_bytes=new byte[MAX_BUFFER];
                 paquete = new DatagramPacket(mensaje_bytes,MAX_BUFFER);
                 socket.receive(paquete);
-                
-                // Lo formateamos
-                mensaje_bytes=new byte[paquete.getLength()];
-                mensaje_bytes=paquete.getData();
-                mensaje = new String(mensaje_bytes,0,paquete.getLength()).trim();
-                
+                ByteArrayInputStream byteStream = new ByteArrayInputStream(mensaje_bytes);
+                ObjectInputStream objectStream = new ObjectInputStream(
+                        new BufferedInputStream(byteStream));
+                Object mensajeTexto = objectStream.readObject();
                 // Lo mostramos por pantalla
-                receptorMensaje.recibirMensaje(mensaje);
-                
+                receptorMensaje.recibirMensaje((MensajeTexto) mensajeTexto);
+                objectStream.close();
+
                 //Obtenemos IP Y PUERTO
-                puertoCliente = paquete.getPort();
-                addressCliente = paquete.getAddress();
+                //puertoCliente = paquete.getPort();
+                //addressCliente = paquete.getAddress();
 
-                if (mensaje.startsWith("fin")) {
-                    mensajeComp="Transmisión con el servidor finalizada...";
-                    enviaMensaje(mensajeComp);
-                }
-                else if (mensaje.startsWith("hola")) {
-                    mensajeComp="¿Cómo estas?";
-                    
-                    //formateamos el mensaje de salida
-                    enviaMensaje(mensajeComp);  
-                }
-                else if (mensaje.startsWith("bien y tú")) {
-                    mensajeComp="También estoy bien, gracias";
-                    
-                    //formateamos el mensaje de salida
-                    enviaMensaje(mensajeComp);
-                }
-                else{
-                    mensajeComp="...";
-                }
+//                if (mensaje.startsWith("fin")) {
+//                    mensajeComp="Transmisión con el servidor finalizada...";
+//                    enviaMensaje(mensajeComp);
+//                }
+//                else if (mensaje.startsWith("hola")) {
+//                    mensajeComp="¿Cómo estas?";
+//
+//                    //formateamos el mensaje de salida
+//                    enviaMensaje(mensajeComp);
+//                }
+//                else if (mensaje.startsWith("bien y tú")) {
+//                    mensajeComp="También estoy bien, gracias";
+//
+//                    //formateamos el mensaje de salida
+//                    enviaMensaje(mensajeComp);
+//                }
+//                else{
+//                    mensajeComp="...";
+//                }
 
-            } while (!mensaje.startsWith("fin"));
+            } while (true);
         }
         catch (Exception e) {
             System.err.println(e.getMessage());

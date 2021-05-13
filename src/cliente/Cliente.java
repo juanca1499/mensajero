@@ -1,6 +1,6 @@
 package cliente;
 
-import cliente.gui.MensajeroClienteGUI;
+import gui.MensajeroClienteGUI;
 import cliente.interfaces.EnviadorMensaje;
 import cliente.interfaces.ImpresoraChat;
 import cliente.interfaces.ReceptorMensaje;
@@ -9,9 +9,9 @@ import cliente.mensajes.MensajeTexto;
 import cliente.tcp.ClienteEnviaTCP;
 import cliente.udp.ClienteEnviaUDP;
 import cliente.udp.ClienteEscuchaUDP;
-import servidor.ConexionServidor;
+import conexion.ConexionCliente;
+import conexion.ConexionServidor;
 
-import java.net.DatagramSocket;
 
 public class Cliente implements EnviadorMensaje, ReceptorMensaje {
 
@@ -22,37 +22,41 @@ public class Cliente implements EnviadorMensaje, ReceptorMensaje {
     private ClienteEnviaUDP clienteEnviaUDP;
     private ClienteEscuchaUDP clienteEscuchaUDP;
     private ClienteEnviaTCP clienteEnviaTCP;
-    private MensajeroClienteGUI mensajeroClienteGUI;
 
-    public Cliente(ConexionServidor conServidor, String nombreUsuario, ImpresoraChat impresora) throws Exception {
+    private MensajeroClienteGUI clienteGUI;
+
+    public Cliente(ConexionServidor conServidor, String nombreUsuario) throws Exception {
         this.nombreUsuario = nombreUsuario;
-        this.impresora = impresora;
         this.servidor = conServidor;
         conexion = new ConexionCliente(conServidor.getIp(),conServidor.getPuertoUDP(),
-                conServidor.getPuertoTCP());
+                conServidor.getPuertoTCP(),nombreUsuario);
         clienteEnviaUDP = new ClienteEnviaUDP(conexion.getSocket(),conServidor.getIp(),conServidor.getPuertoUDP());
         clienteEscuchaUDP = new ClienteEscuchaUDP(conexion.getSocket(),this);
+        //clienteEnviaTCP = new ClienteEnviaTCP(servidor);
+        clienteGUI = new MensajeroClienteGUI(nombreUsuario,this);
+        clienteGUI.setVisible(true);
+        impresora = clienteGUI;
     }
 
     @Override
     public void enviarMensaje(MensajeTexto mensaje) {
-        clienteEnviaUDP.enviar(mensaje.toString());
+        mensaje.setOrigen(nombreUsuario);
+        clienteEnviaUDP.enviar(mensaje);
     }
 
     @Override
     public void enviarArchivo(MensajeArchivo archivo) {
-
+        clienteEnviaTCP.enviar(archivo);
     }
 
     @Override
-    public void recibirMensaje(String mensaje) {
-        MensajeTexto mensajeTexto = new MensajeTexto("Cliente","Servidor",mensaje);
-        impresora.imprimirMensaje(mensajeTexto);
+    public void recibirMensaje(MensajeTexto mensaje) {
+        impresora.imprimirMensaje(mensaje);
     }
 
     @Override
-    public void recibirArchivo(byte[] archivo) {
-
+    public void recibirArchivo(MensajeArchivo archivo) {
+        impresora.imprimirMensaje(archivo);
     }
 
     public String getNombreUsuario() {
@@ -61,5 +65,9 @@ public class Cliente implements EnviadorMensaje, ReceptorMensaje {
 
     public ConexionCliente getConexion() {
         return conexion;
+    }
+
+    public void setServidor(ConexionServidor conexionServidor) {
+        servidor = conexionServidor;
     }
 }

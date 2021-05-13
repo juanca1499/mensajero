@@ -1,10 +1,14 @@
 package conexion;
 
 public abstract class ConexionBase {
+
     protected String ip;
     protected int puertoUDP;
     protected int puertoTCP;
 
+    public ConexionBase(String ip) {
+        this.ip = ip;
+    }
     public ConexionBase(String ip, int puertoUDP, int puertoTCP) {
         this.ip = ip;
         this.puertoUDP = puertoUDP;
@@ -15,8 +19,8 @@ public abstract class ConexionBase {
         return ip;
     }
 
-    public void setIpCliente(String ipCliente) {
-        this.ip = ipCliente;
+    public void setIp(String ip) {
+        this.ip = ip;
     }
 
     public int getPuertoUDP() {

@@ -9,7 +9,7 @@ public class ClienteTCP{
         PUERTO_SERVER=puertoS;
     }
     public void inicia() throws Exception{
-        ClienteEnviaTCP clienteTCP= new ClienteEnviaTCP(SERVER,PUERTO_SERVER);
-        clienteTCP.start();
+        //ClienteEnviaTCP clienteTCP= new ClienteEnviaTCP(SERVER,PUERTO_SERVER);
+        //clienteTCP.start();
     }
 }
