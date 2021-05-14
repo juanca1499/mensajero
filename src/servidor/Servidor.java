@@ -1,6 +1,5 @@
 package servidor;
 
-import cliente.mensajes.Mensaje;
 import conexion.ConexionCliente;
 import cliente.interfaces.EnviadorMensaje;
 import cliente.interfaces.ImpresoraChat;
@@ -20,7 +19,7 @@ public class Servidor implements EnviadorMensaje, ReceptorMensaje {
 
     private ImpresoraChat impresora;
     private List<ConexionCliente> listaClientes;
-    private ConexionServidor conexion;
+    private ConexionServidor conexionServidor;
     private ServidorEscuchaUDP servidorEscuchaUDP;
     private ServidorEscuchaTCP servidorEscuchaTCP;
     private ServidorEnviaUDP servidorEnviaUDP;
@@ -29,9 +28,9 @@ public class Servidor implements EnviadorMensaje, ReceptorMensaje {
 
     public Servidor() throws Exception {
         this.listaClientes = new ArrayList<>();
-        conexion = new ConexionServidor("192.168.0.15",50000,60000);
-        servidorEscuchaUDP = new ServidorEscuchaUDP(conexion.getPuertoUDP(),this);
-        servidorEscuchaTCP = new ServidorEscuchaTCP(conexion.getPuertoTCP(),this);
+        conexionServidor = new ConexionServidor("192.168.0.15");
+        servidorEscuchaUDP = new ServidorEscuchaUDP(conexionServidor,this);
+        servidorEscuchaTCP = new ServidorEscuchaTCP(conexionServidor.getPuertoTCP(),this);
         inicializarEscuchadores();
         servidorGUI = new MensajeroServidorGUI(this);
         servidorGUI.setVisible(true);
@@ -46,10 +45,12 @@ public class Servidor implements EnviadorMensaje, ReceptorMensaje {
     public void enviarMensaje(MensajeTexto mensaje) {
         // Se hace un broadcast a todos los clientes conectados.
         if(mensaje.getDestino() == null) {
+            mensaje.setOrigen("SERVIDOR");
             for(ConexionCliente conexionCliente : listaClientes) {
                 enviarMensajeTexto(conexionCliente, mensaje);
             }
         } else {
+            // Se envía a un cliente específico.
             ConexionCliente conexionCliente = buscarCliente(mensaje.getDestino());
             enviarMensajeTexto(conexionCliente,mensaje);
         }
@@ -100,14 +101,14 @@ public class Servidor implements EnviadorMensaje, ReceptorMensaje {
             puertos[0] = ultimoPuertoUDP + 1;
             puertos[1] = ultimoPuertoTCP + 1;
         } else {
-            puertos[0] = conexion.getPuertoUDP();
-            puertos[1] = conexion.getPuertoTCP();
+            puertos[0] = conexionServidor.getPuertoUDP();
+            puertos[1] = conexionServidor.getPuertoTCP();
         }
         return puertos;
     }
 
     public ConexionServidor getConexion() {
-        return conexion;
+        return conexionServidor;
     }
 
     private void enviarMensajeTexto(ConexionCliente conexionCliente, MensajeTexto mensaje) {

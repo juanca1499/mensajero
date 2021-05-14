@@ -2,36 +2,27 @@ package cliente.udp;
 
 import cliente.interfaces.ReceptorMensaje;
 import cliente.mensajes.MensajeTexto;
+import conexion.ConexionCliente;
 
 import java.net.*;
 import java.io.*;
  
 //declaramos la clase udp escucha
 public class ClienteEscuchaUDP extends Thread {
-    protected BufferedReader in;
     //Definimos el sockets, número de bytes del buffer, y mensaje.
     protected final int MAX_BUFFER=256;
-    protected final int PUERTO_CLIENTE;
     protected DatagramSocket socket;
-    protected InetAddress address;
     protected DatagramPacket servPaquete;
-    private ReceptorMensaje receptor;
-    //protected String SERVER;
+    private final ReceptorMensaje receptor;
     
-    public ClienteEscuchaUDP(DatagramSocket socketNuevo, ReceptorMensaje receptor){
-        socket=socketNuevo;
-        //SERVER=servidor;
-        PUERTO_CLIENTE=socket.getLocalPort();
-        System.out.println("CLIENTE ESCUCHANDO EN EL PUERTO: " + PUERTO_CLIENTE);
+    public ClienteEscuchaUDP(ConexionCliente conexionCliente, ReceptorMensaje receptor){
+        socket=conexionCliente.getSocketUDP();
         this.receptor = receptor;
+        System.out.println("CLIENTE ESCUCHANDO EN EL PUERTO (UDP): " + conexionCliente.getPuertoUDP());
     }
     public void run() {
-        String mensaje="";
-        byte[] mensaje_bytes=mensaje.getBytes();
-        
-        String cadenaMensaje="";
 
-        byte[] recogerServidor_bytes;
+        byte[] mensaje_bytes;
 
         try {
             while (true) {

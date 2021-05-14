@@ -5,15 +5,11 @@ import java.net.DatagramSocket;
 public class ConexionCliente extends ConexionBase {
 
     private String usuario;
-    private DatagramSocket socket;
+    private DatagramSocket socketUDP;
 
-    public ConexionCliente(String ip, int puertoUDP, int puertoTCP, String usuario) throws Exception {
-        super(ip, puertoUDP, puertoTCP);
+    public ConexionCliente(String ip, String usuario) throws Exception {
+        super(ip);
         this.usuario = usuario;
-        socket = new DatagramSocket();
-    }
-    public DatagramSocket getSocket() {
-        return socket;
     }
 
     public String getUsuario() {

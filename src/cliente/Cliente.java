@@ -34,7 +34,7 @@ public class Cliente implements EnviadorMensaje, ReceptorMensaje {
 
     private void inicializarServicios() {
         clienteEnviaUDP = new ClienteEnviaUDP(conexionCliente,conexionServidor);
-        clienteEscuchaUDP = new ClienteEscuchaUDP(conexionCliente.getSocket(),this);
+        clienteEscuchaUDP = new ClienteEscuchaUDP(conexionCliente,this);
         clienteEscuchaUDP.start();
     }
 

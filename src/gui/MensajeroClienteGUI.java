@@ -93,12 +93,12 @@ public class MensajeroClienteGUI extends MensajeroGUI {
     public void imprimirMensaje(Mensaje mensaje) {
         if (mensaje instanceof MensajeTexto) {
             MensajeTexto msjTexto = (MensajeTexto) mensaje;
-            txtAreaMensajesExternos.append("\n[" + mensaje.getOrigen() + "]");
+            txtAreaMensajesExternos.append("\n\n[" + mensaje.getOrigen() + "]");
             txtAreaMensajesExternos.append("\n<<" + mensaje.getFecha().toString() + ">>");
             txtAreaMensajesExternos.append("\n" + msjTexto);
         } else if (mensaje instanceof MensajeArchivo) {
             MensajeArchivo msjArchivo = (MensajeArchivo) mensaje;
-            txtAreaMensajesExternos.append("\n[" + mensaje.getOrigen() + "]");
+            txtAreaMensajesExternos.append("\n\n[" + mensaje.getOrigen() + "]");
             txtAreaMensajesExternos.append("\n<<" + mensaje.getFecha().toString() + ">>");
             txtAreaMensajesExternos.append("\n" + "Se recibió un archivo: " + msjArchivo.getArchivo().getAbsolutePath());
         }

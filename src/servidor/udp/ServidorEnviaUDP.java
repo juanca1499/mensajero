@@ -21,7 +21,7 @@ public class ServidorEnviaUDP {
 
     public ServidorEnviaUDP(ConexionCliente conexionCliente) throws Exception {
         IP_DESTINO = conexionCliente.getIp();
-        PUERTO_DESTINO= conexionCliente.getSocket().getLocalPort();
+        PUERTO_DESTINO= conexionCliente.getPuertoUDP();
         socket = new DatagramSocket();
     }
 

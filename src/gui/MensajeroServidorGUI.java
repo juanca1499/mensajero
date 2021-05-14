@@ -65,12 +65,14 @@ public class MensajeroServidorGUI extends MensajeroGUI {
     public void imprimirMensaje(Mensaje mensaje) {
         if (mensaje instanceof MensajeTexto) {
             MensajeTexto msjTexto = (MensajeTexto) mensaje;
-            txtAreaLogs.append("\n[" + msjTexto.getOrigen() + "]" + " ---> " + msjTexto.getFecha().toString());
+            txtAreaLogs.append("\n\n[" + msjTexto.getOrigen() + "]" + " ---> " + "[" + msjTexto.getDestino() + "]");
+            txtAreaLogs.append("\n" + msjTexto.getFecha().toString());
             txtAreaLogs.append("\n" + msjTexto);
         } else if (mensaje instanceof MensajeArchivo) {
             MensajeArchivo msjArchivo = (MensajeArchivo) mensaje;
-            txtAreaLogs.append("\n[" + msjArchivo.getOrigen() + "]" + " ---> " + msjArchivo.getFecha().toString());
-            txtAreaLogs.append("\n" + "Se recibió un archivo: " + msjArchivo.getArchivo().getAbsolutePath());
+            txtAreaLogs.append("\n\n[" + msjArchivo.getOrigen() + "]" + " ---> " + "[" + msjArchivo.getDestino() + "]");
+            txtAreaLogs.append("\n"+ msjArchivo.getFecha().toString());
+            txtAreaLogs.append("\n"+ msjArchivo.getArchivo().toString());
         }
     }
 }

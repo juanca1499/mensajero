@@ -19,16 +19,16 @@ public class MensajeroProgram {
         Servidor servidor = new Servidor();
         // Se le indican al cliente detalles sobre como conectarse al servidor.
         Cliente cliente = new Cliente(servidor.getConexion(),"Juca");
-        cliente.setConexionCliente(new ConexionCliente("192.168.0.15",50001,60001,"Juca"));
+        cliente.setConexionCliente(new ConexionCliente("192.168.0.15","Juca"));
         Cliente cliente2 = new Cliente(servidor.getConexion(),"Juanito");
-        cliente2.setConexionCliente(new ConexionCliente("192.168.0.15",55000,65000,"Juanito"));
+        cliente2.setConexionCliente(new ConexionCliente("192.168.0.15","Juanito"));
 
         servidor.agregarCliente(cliente.getConexionCliente());
         servidor.agregarCliente(cliente2.getConexionCliente());
 
-        System.out.println("CLIENTE JUCA:  " + cliente.getConexionCliente().getSocket().getInetAddress() + ":"
-                + cliente.getConexionCliente().getSocket().getLocalPort());
-        System.out.println("CLIENTE JUANITO:  " + cliente2.getConexionCliente().getSocket().getInetAddress() + ":"
-                + cliente2.getConexionCliente().getSocket().getLocalPort());
+//        System.out.println("CLIENTE JUCA:  " + cliente.getConexionCliente().getSocket().getInetAddress() + ":"
+//                + cliente.getConexionCliente().getSocket().getLocalPort());
+//        System.out.println("CLIENTE JUANITO:  " + cliente2.getConexionCliente().getSocket().getInetAddress() + ":"
+//                + cliente2.getConexionCliente().getSocket().getLocalPort());
     }
 }
