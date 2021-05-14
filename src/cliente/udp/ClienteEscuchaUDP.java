@@ -22,10 +22,10 @@ public class ClienteEscuchaUDP extends Thread {
         socket=socketNuevo;
         //SERVER=servidor;
         PUERTO_CLIENTE=socket.getLocalPort();
+        System.out.println("CLIENTE ESCUCHANDO EN EL PUERTO: " + PUERTO_CLIENTE);
         this.receptor = receptor;
     }
     public void run() {
-
         String mensaje="";
         byte[] mensaje_bytes=mensaje.getBytes();
         
@@ -34,7 +34,7 @@ public class ClienteEscuchaUDP extends Thread {
         byte[] recogerServidor_bytes;
 
         try {
-            do {
+            while (true) {
                 // Recibimos el paquete
                 mensaje_bytes=new byte[MAX_BUFFER];
                 servPaquete = new DatagramPacket(mensaje_bytes,MAX_BUFFER);
@@ -46,7 +46,7 @@ public class ClienteEscuchaUDP extends Thread {
                 // Lo mostramos por pantalla
                 receptor.recibirMensaje((MensajeTexto) mensajeTexto);
                 objectStream.close();
-            } while (true);
+            }
         }
         catch (Exception e) {
             e.printStackTrace();

@@ -1,5 +1,6 @@
 package servidor;
 
+import cliente.mensajes.Mensaje;
 import conexion.ConexionCliente;
 import cliente.interfaces.EnviadorMensaje;
 import cliente.interfaces.ImpresoraChat;
@@ -24,7 +25,6 @@ public class Servidor implements EnviadorMensaje, ReceptorMensaje {
     private ServidorEscuchaTCP servidorEscuchaTCP;
     private ServidorEnviaUDP servidorEnviaUDP;
 
-
     private MensajeroServidorGUI servidorGUI;
 
     public Servidor() throws Exception {
@@ -44,12 +44,14 @@ public class Servidor implements EnviadorMensaje, ReceptorMensaje {
     }
     @Override
     public void enviarMensaje(MensajeTexto mensaje) {
-        try {
-            ConexionCliente cliente = buscarCliente(mensaje.getDestino());
-            //servidorEnviaUDP = new ServidorEnviaUDP(cliente);
-            //servidorEnviaUDP.enviar(mensaje);
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        // Se hace un broadcast a todos los clientes conectados.
+        if(mensaje.getDestino() == null) {
+            for(ConexionCliente conexionCliente : listaClientes) {
+                enviarMensajeTexto(conexionCliente, mensaje);
+            }
+        } else {
+            ConexionCliente conexionCliente = buscarCliente(mensaje.getDestino());
+            enviarMensajeTexto(conexionCliente,mensaje);
         }
     }
 
@@ -70,13 +72,14 @@ public class Servidor implements EnviadorMensaje, ReceptorMensaje {
         enviarArchivo(archivo);
     }
 
-    public ConexionServidor agregarCliente(ConexionCliente cliente) {
-        ConexionServidor conexionServidor = new ConexionServidor(conexion.getIp());
-        int[] puertos = getPuertosDisponibles();
-        conexionServidor.setPuertoUDP(puertos[0]);
-        conexionServidor.setPuertoTCP(puertos[1]);
+    public void agregarCliente(ConexionCliente cliente) {
         listaClientes.add(cliente);
-        return conexionServidor;
+        //ConexionServidor conexionServidor = new ConexionServidor(conexion.getIp());
+        //int[] puertos = getPuertosDisponibles();
+        //conexionServidor.setPuertoUDP(puertos[0]);
+        //conexionServidor.setPuertoTCP(puertos[1]);
+        //listaClientes.add(cliente);
+        //return conexionServidor;
     }
 
     public ConexionCliente buscarCliente(String usuario) {
@@ -101,5 +104,18 @@ public class Servidor implements EnviadorMensaje, ReceptorMensaje {
             puertos[1] = conexion.getPuertoTCP();
         }
         return puertos;
+    }
+
+    public ConexionServidor getConexion() {
+        return conexion;
+    }
+
+    private void enviarMensajeTexto(ConexionCliente conexionCliente, MensajeTexto mensaje) {
+        try {
+            servidorEnviaUDP = new ServidorEnviaUDP(conexionCliente);
+            servidorEnviaUDP.enviar(mensaje);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 }

@@ -1,6 +1,8 @@
 package cliente.udp;
 
 import cliente.mensajes.MensajeTexto;
+import conexion.ConexionCliente;
+import conexion.ConexionServidor;
 
 import java.net.*;
 import java.io.*;
@@ -9,27 +11,27 @@ import java.io.*;
 public class ClienteEnviaUDP {
     //Definimos el sockets, número de bytes del buffer, y mensaje.
     protected final int MAX_BUFFER=256;
-    protected final int PUERTO_SERVER;
+    protected final int PUERTO_SERVIDOR;
+    protected final String IP_SERVIDOR;
     protected DatagramSocket socket;
     protected InetAddress address;
     protected DatagramPacket paquete;
-    protected final String SERVER;
     
-    public ClienteEnviaUDP(DatagramSocket nuevoSocket, String receptor, int puertoReceptor){
-        socket = nuevoSocket;
-        SERVER= receptor;
-        PUERTO_SERVER= puertoReceptor;
+    public ClienteEnviaUDP(ConexionCliente conexionCliente, ConexionServidor conexionServidor){
+        socket = conexionCliente.getSocket();
+        IP_SERVIDOR= conexionServidor.getIp();
+        PUERTO_SERVIDOR= conexionServidor.getPuertoUDP();
     }
-    
+
     public void enviar(MensajeTexto mensaje) {
         byte[] mensaje_bytes;
         try {
-            address=InetAddress.getByName(SERVER);
+            address=InetAddress.getByName(IP_SERVIDOR);
             ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
             ObjectOutputStream objectStream = new ObjectOutputStream(byteArray);
             objectStream.writeObject(mensaje);
             mensaje_bytes = byteArray.toByteArray();
-            paquete = new DatagramPacket(mensaje_bytes,mensaje_bytes.length,address,PUERTO_SERVER);
+            paquete = new DatagramPacket(mensaje_bytes,mensaje_bytes.length,address,PUERTO_SERVIDOR);
             socket.send(paquete);
 //            String mensajeMandado=new String(paquete.getData(),0,paquete.getLength()).trim();
 //            System.out.println("Mensaje \""+ mensajeMandado +

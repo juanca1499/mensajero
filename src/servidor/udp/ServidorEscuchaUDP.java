@@ -6,7 +6,7 @@ import cliente.mensajes.MensajeTexto;
 import java.net.*;
 import java.io.*;
 
-public class ServidorEscuchaUDP extends Thread{
+public class ServidorEscuchaUDP extends Thread {
     protected DatagramSocket socket;
     protected final int PUERTO_SERVER;
     protected int puertoCliente=0;
@@ -42,11 +42,14 @@ public class ServidorEscuchaUDP extends Thread{
                 Object mensajeTexto = objectStream.readObject();
                 // Lo mostramos por pantalla
                 receptorMensaje.recibirMensaje((MensajeTexto) mensajeTexto);
+                puertoCliente = paquete.getPort();
+                addressCliente = paquete.getAddress();
+                System.out.println("IP A SER ENVIADO: " + addressCliente);
+                System.out.println("PUERTO A SER ENVIADO: " + puertoCliente);
+                enviaMensaje("Ola");
                 objectStream.close();
 
                 //Obtenemos IP Y PUERTO
-                //puertoCliente = paquete.getPort();
-                //addressCliente = paquete.getAddress();
 
 //                if (mensaje.startsWith("fin")) {
 //                    mensajeComp="Transmisión con el servidor finalizada...";
@@ -76,16 +79,20 @@ public class ServidorEscuchaUDP extends Thread{
         }
     }
     private void enviaMensaje(String mensajeComp) throws Exception{
-        mensaje2_bytes = new byte[mensajeComp.length()];
-        mensaje2_bytes = mensajeComp.getBytes();
+        //mensaje2_bytes = new byte[mensajeComp.length()];
+        //mensaje2_bytes = mensajeComp.getBytes();
+        ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
+        ObjectOutputStream objectStream = new ObjectOutputStream(byteArray);
+        objectStream.writeObject(new MensajeTexto(mensajeComp));
+        mensaje2_bytes = byteArray.toByteArray();
     
         //Preparamos el paquete que queremos enviar
         envPaquete = new DatagramPacket(mensaje2_bytes,mensaje2_bytes.length,addressCliente,puertoCliente);
 
         // realizamos el envio
         socket.send(envPaquete);
-        System.out.println("Mensaje saliente del servidor \""+
-                (new String(envPaquete.getData(),0,envPaquete.getLength()))+
-                "\" al cliente " + addressCliente + ": "+puertoCliente);
+//        System.out.println("Mensaje saliente del servidor \""+
+//                (new String(envPaquete.getData(),0,envPaquete.getLength()))+
+//                "\" al cliente " + addressCliente + ": "+puertoCliente);
     }
 }
