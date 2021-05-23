@@ -1,6 +1,7 @@
 package conexion;
 
 import java.net.DatagramSocket;
+import java.net.ServerSocket;
 
 public abstract class ConexionBase {
 
@@ -8,15 +9,18 @@ public abstract class ConexionBase {
     protected int puertoUDP;
     protected int puertoTCP;
     protected DatagramSocket socketUDP;
+    protected ServerSocket socketTCP;
 
     public ConexionBase(String ip) throws Exception {
         this.ip = ip;
         socketUDP = new DatagramSocket();
+        socketTCP = new ServerSocket();
     }
-    public ConexionBase(String ip, int puertoUDP, int puertoTCP) {
+    public ConexionBase(String ip, int puertoUDP, int puertoTCP) throws Exception {
         this.ip = ip;
         this.puertoUDP = puertoUDP;
         this.puertoTCP = puertoTCP;
+        socketTCP = new ServerSocket();
     }
 
     public String getIp() {
@@ -28,7 +32,7 @@ public abstract class ConexionBase {
     }
 
     public int getPuertoTCP() {
-        return puertoTCP;
+        return socketTCP.getLocalPort();
     }
 
     public DatagramSocket getSocketUDP() {

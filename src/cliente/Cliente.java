@@ -11,6 +11,9 @@ import cliente.udp.ClienteEnviaUDP;
 import cliente.udp.ClienteEscuchaUDP;
 import conexion.ConexionCliente;
 import conexion.ConexionServidor;
+import utilidades.Alerta;
+
+import java.io.File;
 
 
 public class Cliente implements EnviadorMensaje, ReceptorMensaje {
@@ -32,9 +35,10 @@ public class Cliente implements EnviadorMensaje, ReceptorMensaje {
         impresora = clienteGUI;
     }
 
-    private void inicializarServicios() {
+    private void inicializarServicios() throws Exception {
         clienteEnviaUDP = new ClienteEnviaUDP(conexionCliente,conexionServidor);
         clienteEscuchaUDP = new ClienteEscuchaUDP(conexionCliente,this);
+        clienteEnviaTCP = new ClienteEnviaTCP(conexionCliente,conexionServidor);
         clienteEscuchaUDP.start();
     }
 
@@ -51,6 +55,12 @@ public class Cliente implements EnviadorMensaje, ReceptorMensaje {
 
     @Override
     public void enviarArchivo(MensajeArchivo archivo) {
+        archivo.setOrigen(nombreUsuario);
+        if(archivo.getOrigen().equals("Juca")) {
+            archivo.setDestino("Juanito");
+        } else {
+            archivo.setDestino("Juca");
+        }
         clienteEnviaTCP.enviar(archivo);
     }
 
@@ -61,7 +71,10 @@ public class Cliente implements EnviadorMensaje, ReceptorMensaje {
 
     @Override
     public void recibirArchivo(MensajeArchivo archivo) {
-        impresora.imprimirMensaje(archivo);
+        File archivoDestino = Alerta.pedirUbicacion(clienteGUI);
+        if(archivoDestino != null) {
+            impresora.imprimirMensaje(archivo);
+        }
     }
 
     public String getNombreUsuario() {

@@ -33,9 +33,9 @@ public class ClienteEscuchaUDP extends Thread {
                 ByteArrayInputStream byteStream = new ByteArrayInputStream(mensaje_bytes);
                 ObjectInputStream objectStream = new ObjectInputStream(
                         new BufferedInputStream(byteStream));
-                Object mensajeTexto = objectStream.readObject();
+                MensajeTexto mensajeTexto = (MensajeTexto) objectStream.readObject();
                 // Lo mostramos por pantalla
-                receptor.recibirMensaje((MensajeTexto) mensajeTexto);
+                receptor.recibirMensaje(mensajeTexto);
                 objectStream.close();
             }
         }

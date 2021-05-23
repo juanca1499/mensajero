@@ -30,7 +30,7 @@ public class Servidor implements EnviadorMensaje, ReceptorMensaje {
         this.listaClientes = new ArrayList<>();
         conexionServidor = new ConexionServidor("192.168.0.15");
         servidorEscuchaUDP = new ServidorEscuchaUDP(conexionServidor,this);
-        servidorEscuchaTCP = new ServidorEscuchaTCP(conexionServidor.getPuertoTCP(),this);
+        servidorEscuchaTCP = new ServidorEscuchaTCP(conexionServidor,this);
         inicializarEscuchadores();
         servidorGUI = new MensajeroServidorGUI(this);
         servidorGUI.setVisible(true);
@@ -39,7 +39,7 @@ public class Servidor implements EnviadorMensaje, ReceptorMensaje {
 
     private synchronized void inicializarEscuchadores() {
         servidorEscuchaUDP.start();
-        //servidorEscuchaTCP.start();
+        servidorEscuchaTCP.start();
     }
     @Override
     public void enviarMensaje(MensajeTexto mensaje) {
@@ -75,12 +75,6 @@ public class Servidor implements EnviadorMensaje, ReceptorMensaje {
 
     public void agregarCliente(ConexionCliente cliente) {
         listaClientes.add(cliente);
-        //ConexionServidor conexionServidor = new ConexionServidor(conexion.getIp());
-        //int[] puertos = getPuertosDisponibles();
-        //conexionServidor.setPuertoUDP(puertos[0]);
-        //conexionServidor.setPuertoTCP(puertos[1]);
-        //listaClientes.add(cliente);
-        //return conexionServidor;
     }
 
     public ConexionCliente buscarCliente(String usuario) {
@@ -90,21 +84,6 @@ public class Servidor implements EnviadorMensaje, ReceptorMensaje {
             }
         }
         return null;
-    }
-
-    private int[] getPuertosDisponibles() {
-        int[] puertos = new int[2];
-        if(!listaClientes.isEmpty()) {
-            ConexionCliente ultimaConexion = listaClientes.get(listaClientes.size() - 1);
-            int ultimoPuertoUDP = ultimaConexion.getPuertoUDP();
-            int ultimoPuertoTCP = ultimaConexion.getPuertoTCP();
-            puertos[0] = ultimoPuertoUDP + 1;
-            puertos[1] = ultimoPuertoTCP + 1;
-        } else {
-            puertos[0] = conexionServidor.getPuertoUDP();
-            puertos[1] = conexionServidor.getPuertoTCP();
-        }
-        return puertos;
     }
 
     public ConexionServidor getConexion() {

@@ -34,9 +34,9 @@ public class ServidorEscuchaUDP extends Thread {
                 ByteArrayInputStream byteStream = new ByteArrayInputStream(mensaje_bytes);
                 ObjectInputStream objectStream = new ObjectInputStream(
                         new BufferedInputStream(byteStream));
-                Object mensajeTexto = objectStream.readObject();
+                MensajeTexto mensajeTexto = (MensajeTexto) objectStream.readObject();
                 // Lo mostramos por pantalla
-                receptorMensaje.recibirMensaje((MensajeTexto) mensajeTexto);
+                receptorMensaje.recibirMensaje(mensajeTexto);
                 puertoCliente = paquete.getPort();
                 addressCliente = paquete.getAddress();
                 System.out.println("IP A SER ENVIADO: " + addressCliente);

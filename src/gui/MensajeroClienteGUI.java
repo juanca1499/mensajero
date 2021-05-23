@@ -4,6 +4,7 @@ import cliente.interfaces.EnviadorMensaje;
 import cliente.interfaces.ImpresoraChat;
 import cliente.mensajes.*;
 import gui.MensajeroGUI;
+import utilidades.RutaUtilidades;
 
 import javax.swing.*;
 import java.awt.*;
@@ -62,6 +63,7 @@ public class MensajeroClienteGUI extends MensajeroGUI {
     private class EnviarMensaje implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
+            // Se enviará un mensaje de texto.
             if(!archivoAdjunto) {
                 String texto = txtAreaMensaje.getText();
                 MensajeTexto mensaje = new MensajeTexto(texto);
@@ -69,18 +71,10 @@ public class MensajeroClienteGUI extends MensajeroGUI {
                 txtAreaMensaje.setText("");
                 txtAreaMensajesPropios.append("\n" + mensaje);
             } else {
-//                String ruta = lblStatus.getText();
-//                String nuevaRuta = "";
-//                for(int index = 0; index < ruta.length(); index++) {
-//                    char token = ruta.charAt(index);
-//                    if(token == '\\') {
-//                        nuevaRuta += "\\";
-//                    } else {
-//                        nuevaRuta += token;
-//                    }
-//                }
-                String nuevaRuta = "C:\\Users\\karlo\\Desktop\\Hola.txt";
-                MensajeArchivo mensajeArchivo = new MensajeArchivo(new File(nuevaRuta));
+                // Se enviará un archivo.
+                // Se convierte la ruta del archivo a un formato que acepta Java.
+                String ruta = RutaUtilidades.formatearRuta(rutaArchivo);
+                MensajeArchivo mensajeArchivo = new MensajeArchivo(new File(ruta));
                 enviador.enviarArchivo(mensajeArchivo);
                 archivoAdjunto = false;
                 txtAreaMensaje.setEnabled(true);
@@ -100,7 +94,7 @@ public class MensajeroClienteGUI extends MensajeroGUI {
             MensajeArchivo msjArchivo = (MensajeArchivo) mensaje;
             txtAreaMensajesExternos.append("\n\n[" + mensaje.getOrigen() + "]");
             txtAreaMensajesExternos.append("\n<<" + mensaje.getFecha().toString() + ">>");
-            txtAreaMensajesExternos.append("\n" + "Se recibió un archivo: " + msjArchivo.getArchivo().getAbsolutePath());
+            txtAreaMensajesExternos.append("\n" + "Se recibió un archivo: " + msjArchivo.getArchivo().getName());
         }
     }
 }

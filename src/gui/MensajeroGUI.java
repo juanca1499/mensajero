@@ -12,6 +12,7 @@ import cliente.udp.ClienteUDP;
 import com.sun.org.apache.bcel.internal.generic.Select;
 import servidor.tcp.ServidorTCP;
 import servidor.udp.ServidorUDP;
+import utilidades.Alerta;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -19,6 +20,7 @@ import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 public abstract class MensajeroGUI extends JFrame implements ImpresoraChat {
 
@@ -43,6 +45,8 @@ public abstract class MensajeroGUI extends JFrame implements ImpresoraChat {
     protected Icon iconAdjuntarArchivo;
 
     protected boolean archivoAdjunto;
+
+    protected String rutaArchivo;
 
     public MensajeroGUI() {
         super("Mensajero Fenix");
@@ -101,13 +105,10 @@ public abstract class MensajeroGUI extends JFrame implements ImpresoraChat {
     private class SelectorArchivo implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            JFileChooser selector = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-            selector.setDialogTitle("Escoge el archivo a enviar:");
-            selector.setFileSelectionMode(JFileChooser.FILES_ONLY);
-
-            int valorRetorno = selector.showOpenDialog(panelCentral);
-            if(valorRetorno == JFileChooser.APPROVE_OPTION) {
-                lblStatus.setText("Archivo seleccionado: " + selector.getSelectedFile().getPath());
+            File archivo = Alerta.pedirArchivo(panelCentral);
+            if(archivo != null) {
+                rutaArchivo = archivo.getAbsolutePath();
+                lblStatus.setText("Archivo seleccionado: " + rutaArchivo);
                 txtAreaMensaje.setEnabled(false);
                 archivoAdjunto = true;
             }

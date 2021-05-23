@@ -1,5 +1,6 @@
 package cliente.tcp;
 import cliente.mensajes.MensajeArchivo;
+import conexion.ConexionCliente;
 import conexion.ConexionServidor;
 
 import java.net.*;
@@ -9,24 +10,18 @@ import java.io.*;
  
 // declararamos la clase clientetcp
 public class ClienteEnviaTCP {
-    protected BufferedReader in;
     // declaramos un objeto socket para realizar la comunicación
     protected Socket socket;
     protected final int PUERTO_SERVER;
     protected final String SERVER;
-    protected DataOutputStream out;
     
-    public ClienteEnviaTCP(ConexionServidor conexionServidor)throws Exception{
-        PUERTO_SERVER=conexionServidor.getPuertoTCP();
-        SERVER=conexionServidor.getIp();
+    public ClienteEnviaTCP(ConexionCliente conexionCliente, ConexionServidor conexionServidor) throws Exception{
+        PUERTO_SERVER = conexionServidor.getPuertoTCP();
+        SERVER = conexionServidor.getIp();
 
         // Instanciamos un socket con la dirección del destino y el
         // puerto que vamos a utilizar para la comunicación
-        socket = new Socket(SERVER,PUERTO_SERVER);
-        
-        // Declaramos e instanciamos el objeto DataOutputStream
-        // que nos valdrá para enviar datos al servidor destino
-        out = new DataOutputStream(socket.getOutputStream());
+        socket = new Socket(SERVER,60000);
     }
     
     public void enviar (MensajeArchivo mensajeArchivo) {

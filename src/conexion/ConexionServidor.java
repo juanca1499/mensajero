@@ -8,7 +8,7 @@ public class ConexionServidor extends ConexionBase {
         super(ip);
     }
 
-    public ConexionServidor(String ip, int puertoUDP, int puertoTCP) {
+    public ConexionServidor(String ip, int puertoUDP, int puertoTCP) throws Exception {
         super(ip, puertoUDP, puertoTCP);
     }
 }
