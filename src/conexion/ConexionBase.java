@@ -16,11 +16,13 @@ public abstract class ConexionBase {
         socketUDP = new DatagramSocket();
         socketTCP = new ServerSocket();
     }
+
     public ConexionBase(String ip, int puertoUDP, int puertoTCP) throws Exception {
         this.ip = ip;
         this.puertoUDP = puertoUDP;
         this.puertoTCP = puertoTCP;
-        socketTCP = new ServerSocket();
+        socketUDP = new DatagramSocket(puertoUDP);
+        socketTCP = new ServerSocket(puertoTCP);
     }
 
     public String getIp() {

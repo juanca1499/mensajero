@@ -28,7 +28,7 @@ public class Servidor implements EnviadorMensaje, ReceptorMensaje {
 
     public Servidor() throws Exception {
         this.listaClientes = new ArrayList<>();
-        conexionServidor = new ConexionServidor("192.168.0.15");
+        conexionServidor = new ConexionServidor("192.168.0.15", 30000, 35000);
         servidorEscuchaUDP = new ServidorEscuchaUDP(conexionServidor,this);
         servidorEscuchaTCP = new ServidorEscuchaTCP(conexionServidor,this);
         inicializarEscuchadores();

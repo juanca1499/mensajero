@@ -26,6 +26,7 @@ public class ClienteEnviaUDP {
     public void enviar(MensajeTexto mensaje) {
         byte[] mensaje_bytes;
         try {
+            System.out.println("\n\nENVIANDO MENSAJE DESDE CLIENTE " + mensaje.getOrigen() + " CON DESTINO AL USUARIO " + mensaje.getDestino());
             address=InetAddress.getByName(IP_SERVIDOR);
             ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
             ObjectOutputStream objectStream = new ObjectOutputStream(byteArray);

@@ -9,7 +9,7 @@ import java.io.*;
 
 public class ServidorEscuchaUDP extends Thread {
     protected DatagramSocket socket;
-    protected int puertoCliente=0;
+    protected int puertoCliente;
     
     protected InetAddress addressCliente;
     protected final int MAX_BUFFER=256;
@@ -17,7 +17,7 @@ public class ServidorEscuchaUDP extends Thread {
     protected byte[] mensaje_bytes;
     private ReceptorMensaje receptorMensaje;
     
-    public ServidorEscuchaUDP(ConexionServidor conexionServidor, ReceptorMensaje receptorMensaje) throws Exception{
+    public ServidorEscuchaUDP(ConexionServidor conexionServidor, ReceptorMensaje receptorMensaje) {
         //Creamos el socket
         socket = conexionServidor.getSocketUDP();
         this.receptorMensaje = receptorMensaje;
@@ -39,8 +39,6 @@ public class ServidorEscuchaUDP extends Thread {
                 receptorMensaje.recibirMensaje(mensajeTexto);
                 puertoCliente = paquete.getPort();
                 addressCliente = paquete.getAddress();
-                System.out.println("IP A SER ENVIADO: " + addressCliente);
-                System.out.println("PUERTO A SER ENVIADO: " + puertoCliente);
                 objectStream.close();
             }
         }

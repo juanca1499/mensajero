@@ -1,14 +1,16 @@
 package conexion;
 
-import java.net.DatagramSocket;
-
 public class ConexionCliente extends ConexionBase {
 
     private String usuario;
-    private DatagramSocket socketUDP;
 
     public ConexionCliente(String ip, String usuario) throws Exception {
         super(ip);
+        this.usuario = usuario;
+    }
+
+    public ConexionCliente(String ip, String usuario, int puertoUDP, int puertoTCP) throws Exception {
+        super(ip,puertoUDP,puertoTCP);
         this.usuario = usuario;
     }
 
