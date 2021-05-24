@@ -15,10 +15,10 @@ public class ClienteEscuchaUDP extends Thread {
     protected DatagramPacket servPaquete;
     private final ReceptorMensaje receptor;
     
-    public ClienteEscuchaUDP(ConexionCliente conexionCliente, ReceptorMensaje receptor){
-        socket=conexionCliente.getSocketUDP();
+    public ClienteEscuchaUDP(DatagramSocket socket, ReceptorMensaje receptor){
+        this.socket = socket;
         this.receptor = receptor;
-        System.out.println("CLIENTE ESCUCHANDO EN EL PUERTO (UDP): " + conexionCliente.getPuertoUDP());
+        System.out.println("CLIENTE ESCUCHANDO EN EL PUERTO (UDP): " + socket.getLocalPort());
     }
     public void run() {
 

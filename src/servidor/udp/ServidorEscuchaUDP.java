@@ -17,11 +17,11 @@ public class ServidorEscuchaUDP extends Thread {
     protected byte[] mensaje_bytes;
     private ReceptorMensaje receptorMensaje;
     
-    public ServidorEscuchaUDP(ConexionServidor conexionServidor, ReceptorMensaje receptorMensaje) {
+    public ServidorEscuchaUDP(DatagramSocket socket, ReceptorMensaje receptorMensaje) {
         //Creamos el socket
-        socket = conexionServidor.getSocketUDP();
+        this.socket = socket;
         this.receptorMensaje = receptorMensaje;
-        System.out.println("SERVIDOR ESCUCHANDO EN EL PUERTO (UDP): " + conexionServidor.getPuertoUDP());
+        System.out.println("SERVIDOR ESCUCHANDO EN EL PUERTO (UDP): " + socket.getLocalPort());
     }
 
     public void run() {

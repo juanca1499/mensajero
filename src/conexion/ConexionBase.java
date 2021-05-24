@@ -1,28 +1,19 @@
 package conexion;
 
-import java.net.DatagramSocket;
-import java.net.ServerSocket;
-
 public abstract class ConexionBase {
 
     protected String ip;
     protected int puertoUDP;
     protected int puertoTCP;
-    protected DatagramSocket socketUDP;
-    protected ServerSocket socketTCP;
 
-    public ConexionBase(String ip) throws Exception {
+    public ConexionBase(String ip) {
         this.ip = ip;
-        socketUDP = new DatagramSocket();
-        socketTCP = new ServerSocket();
     }
 
-    public ConexionBase(String ip, int puertoUDP, int puertoTCP) throws Exception {
+    public ConexionBase(String ip, int puertoUDP, int puertoTCP) {
         this.ip = ip;
         this.puertoUDP = puertoUDP;
         this.puertoTCP = puertoTCP;
-        socketUDP = new DatagramSocket(puertoUDP);
-        socketTCP = new ServerSocket(puertoTCP);
     }
 
     public String getIp() {
@@ -30,14 +21,10 @@ public abstract class ConexionBase {
     }
 
     public int getPuertoUDP() {
-        return socketUDP.getLocalPort();
+        return puertoUDP;
     }
 
     public int getPuertoTCP() {
-        return socketTCP.getLocalPort();
-    }
-
-    public DatagramSocket getSocketUDP() {
-        return socketUDP;
+        return puertoTCP;
     }
 }

@@ -12,6 +12,8 @@ import servidor.tcp.ServidorEscuchaTCP;
 import servidor.udp.ServidorEnviaUDP;
 import servidor.udp.ServidorEscuchaUDP;
 
+import java.net.DatagramSocket;
+import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,13 +25,15 @@ public class Servidor implements EnviadorMensaje, ReceptorMensaje {
     private ServidorEscuchaUDP servidorEscuchaUDP;
     private ServidorEscuchaTCP servidorEscuchaTCP;
     private ServidorEnviaUDP servidorEnviaUDP;
-
     private MensajeroServidorGUI servidorGUI;
 
-    public Servidor() throws Exception {
+    private DatagramSocket socketUDP;
+
+    public Servidor(ConexionServidor conexionServidor) throws Exception {
         this.listaClientes = new ArrayList<>();
-        conexionServidor = new ConexionServidor("192.168.0.15", 30000, 35000);
-        servidorEscuchaUDP = new ServidorEscuchaUDP(conexionServidor,this);
+        this.conexionServidor = conexionServidor;
+        this.socketUDP = new DatagramSocket(conexionServidor.getPuertoUDP());
+        servidorEscuchaUDP = new ServidorEscuchaUDP(socketUDP,this);
         servidorEscuchaTCP = new ServidorEscuchaTCP(conexionServidor,this);
         inicializarEscuchadores();
         servidorGUI = new MensajeroServidorGUI(this);
@@ -39,7 +43,7 @@ public class Servidor implements EnviadorMensaje, ReceptorMensaje {
 
     private synchronized void inicializarEscuchadores() {
         servidorEscuchaUDP.start();
-        servidorEscuchaTCP.start();
+        //servidorEscuchaTCP.start();
     }
     @Override
     public void enviarMensaje(MensajeTexto mensaje) {

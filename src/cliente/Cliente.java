@@ -14,6 +14,7 @@ import conexion.ConexionServidor;
 import utilidades.Alerta;
 
 import java.io.File;
+import java.net.DatagramSocket;
 
 
 public class Cliente implements EnviadorMensaje, ReceptorMensaje {
@@ -26,18 +27,19 @@ public class Cliente implements EnviadorMensaje, ReceptorMensaje {
     private ClienteEscuchaUDP clienteEscuchaUDP;
     private ClienteEnviaTCP clienteEnviaTCP;
     private MensajeroClienteGUI clienteGUI;
+    private DatagramSocket socketUDP;
 
-    public Cliente(ConexionServidor conexionServidor, String nombreUsuario) {
-        this.nombreUsuario = nombreUsuario;
-        this.conexionServidor = conexionServidor;
+    public Cliente(ConexionCliente conexionCliente) throws Exception {
+        this.nombreUsuario = conexionCliente.getUsuario();
+        this.socketUDP = new DatagramSocket(conexionCliente.getPuertoUDP());
         clienteGUI = new MensajeroClienteGUI(nombreUsuario,this);
         clienteGUI.setVisible(true);
         impresora = clienteGUI;
     }
 
     private void inicializarServicios() throws Exception {
-        clienteEnviaUDP = new ClienteEnviaUDP(conexionCliente,conexionServidor);
-        clienteEscuchaUDP = new ClienteEscuchaUDP(conexionCliente,this);
+        clienteEnviaUDP = new ClienteEnviaUDP(socketUDP,conexionServidor);
+        clienteEscuchaUDP = new ClienteEscuchaUDP(socketUDP,this);
         clienteEnviaTCP = new ClienteEnviaTCP(conexionCliente,conexionServidor);
         clienteEscuchaUDP.start();
     }

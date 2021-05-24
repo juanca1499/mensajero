@@ -17,8 +17,8 @@ public class ClienteEnviaUDP {
     protected InetAddress address;
     protected DatagramPacket paquete;
     
-    public ClienteEnviaUDP(ConexionCliente conexionCliente, ConexionServidor conexionServidor){
-        socket = conexionCliente.getSocketUDP();
+    public ClienteEnviaUDP(DatagramSocket socket, ConexionServidor conexionServidor){
+        this.socket = socket;
         IP_SERVIDOR= conexionServidor.getIp();
         PUERTO_SERVIDOR= conexionServidor.getPuertoUDP();
     }
