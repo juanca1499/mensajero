@@ -1,5 +1,6 @@
 package cliente;
 
+import cliente.tcp.ClienteEscuchaTCP;
 import gui.MensajeroClienteGUI;
 import cliente.interfaces.EnviadorMensaje;
 import cliente.interfaces.ImpresoraChat;
@@ -14,22 +15,27 @@ import conexion.ConexionServidor;
 import utilidades.Alerta;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.net.DatagramSocket;
 
 
 public class Cliente implements EnviadorMensaje, ReceptorMensaje {
 
     private String nombreUsuario;
+    public final String ubicacionDescargas = System.getProperty("user.home") + "\\DescargasMSJFenix" + "\\";
     private ImpresoraChat impresora;
     private ConexionServidor conexionServidor;
     private ConexionCliente conexionCliente;
     private ClienteEnviaUDP clienteEnviaUDP;
     private ClienteEscuchaUDP clienteEscuchaUDP;
     private ClienteEnviaTCP clienteEnviaTCP;
+    private ClienteEscuchaTCP clienteEscuchaTCP;
     private MensajeroClienteGUI clienteGUI;
     private DatagramSocket socketUDP;
 
     public Cliente(ConexionCliente conexionCliente) throws Exception {
+        this.conexionCliente = conexionCliente;
         this.nombreUsuario = conexionCliente.getUsuario();
         this.socketUDP = new DatagramSocket(conexionCliente.getPuertoUDP());
         clienteGUI = new MensajeroClienteGUI(nombreUsuario,this);
@@ -40,8 +46,10 @@ public class Cliente implements EnviadorMensaje, ReceptorMensaje {
     private void inicializarServicios() throws Exception {
         clienteEnviaUDP = new ClienteEnviaUDP(socketUDP,conexionServidor);
         clienteEscuchaUDP = new ClienteEscuchaUDP(socketUDP,this);
-        clienteEnviaTCP = new ClienteEnviaTCP(conexionCliente,conexionServidor);
+        clienteEnviaTCP = new ClienteEnviaTCP(conexionServidor);
+        clienteEscuchaTCP = new ClienteEscuchaTCP(conexionCliente,this);
         clienteEscuchaUDP.start();
+        clienteEscuchaTCP.start();
     }
 
     @Override
@@ -58,12 +66,21 @@ public class Cliente implements EnviadorMensaje, ReceptorMensaje {
     @Override
     public void enviarArchivo(MensajeArchivo archivo) {
         archivo.setOrigen(nombreUsuario);
-        if(archivo.getOrigen().equals("Juca")) {
-            archivo.setDestino("Juanito");
-        } else {
-            archivo.setDestino("Juca");
+        try {
+            FileInputStream fileInput = new FileInputStream(archivo.getArchivo());
+            byte bytesArchivo[] = new byte[fileInput.available()];
+            fileInput.read(bytesArchivo);
+            archivo.setBytes(bytesArchivo);
+
+            if(archivo.getOrigen().equals("Juca")) {
+                archivo.setDestino("Juanito");
+            } else {
+                archivo.setDestino("Juca");
+            }
+            clienteEnviaTCP.enviar(archivo);
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-        clienteEnviaTCP.enviar(archivo);
     }
 
     @Override
@@ -76,6 +93,13 @@ public class Cliente implements EnviadorMensaje, ReceptorMensaje {
         File archivoDestino = Alerta.pedirUbicacion(clienteGUI);
         if(archivoDestino != null) {
             impresora.imprimirMensaje(archivo);
+            try {
+                FileOutputStream fileOutput = new FileOutputStream(archivoDestino);
+                fileOutput.write(archivo.getBytes());
+                fileOutput.close();
+            } catch(Exception ex) {
+                ex.printStackTrace();
+            }
         }
     }
 

@@ -20,5 +20,8 @@ public class MensajeroClienteProgram {
         // Se le indican al cliente detalles sobre como conectarse al servidor.
         Cliente cliente = new Cliente(new ConexionCliente("192.168.0.15","Juca",40001,50001));
         cliente.setServidor(conexionServidor);
+
+        Cliente cliente2 = new Cliente(new ConexionCliente("192.168.0.15","Juanito",40002,50002));
+        cliente2.setServidor(conexionServidor);
     }
 }

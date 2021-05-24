@@ -1,27 +1,28 @@
-package servidor.tcp;
+package cliente.tcp;
 
 import cliente.interfaces.ReceptorMensaje;
 import cliente.mensajes.MensajeArchivo;
-import conexion.ConexionServidor;
+import conexion.ConexionCliente;
 
 import java.net.*;
 
 import java.io.*;
 
-public class ServidorEscuchaTCP extends Thread {
+public class ClienteEscuchaTCP extends Thread {
+    // declaramos un objeto ServerSocket para realizar la comunicación
     protected ServerSocket socket;
-    protected Socket socketCliente;
+    protected Socket socketServidor;
     private ObjectInputStream objIn;
-    protected final int PUERTO_SERVER;
+    protected final int PUERTO_CLIENTE;
     private ReceptorMensaje receptorMensaje;
-    
-    public ServidorEscuchaTCP(ConexionServidor conexionServidor, ReceptorMensaje receptorMensaje) throws Exception {
-        PUERTO_SERVER = conexionServidor.getPuertoTCP();
+
+    public ClienteEscuchaTCP(ConexionCliente conexionCliente, ReceptorMensaje receptorMensaje) throws Exception {
+        PUERTO_CLIENTE = conexionCliente.getPuertoTCP();
         this.receptorMensaje = receptorMensaje;
         // Instanciamos un ServerSocket con la dirección del destino y el
         // puerto que vamos a utilizar para la comunicación
-        socket = new ServerSocket(PUERTO_SERVER);
-        System.out.println("SERVIDOR ESCUCHANDO EN EL PUERTO (TCP): " + socket.getLocalPort());
+        socket = new ServerSocket(PUERTO_CLIENTE);
+        System.out.println("CLIENTE ESCUCHANDO EN EL PUERTO (TCP): " + socket.getLocalPort());
     }
     // método principal main de la clase
     @Override
@@ -31,14 +32,13 @@ public class ServidorEscuchaTCP extends Thread {
             while (true) {
                 // Creamos un socket_cli al que le pasamos el contenido del objeto socket después
                 // de ejecutar la función accept que nos permitirá aceptar conexiones de clientes
-                socketCliente = socket.accept();
+                socketServidor = socket.accept();
+
                 // Declaramos e instanciamos el objeto DataInputStream
                 // que nos valdrá para recibir datos del cliente
-                objIn = new ObjectInputStream(socketCliente.getInputStream());
+                objIn = new ObjectInputStream(socketServidor.getInputStream());
                 MensajeArchivo mensajeArchivo = (MensajeArchivo) objIn.readObject();
-                System.out.println("\n\nArchivo recibido de la direccion " + socketCliente.getInetAddress() + ":" + socketCliente.getPort());
                 receptorMensaje.recibirArchivo(mensajeArchivo);
-                objIn.close();
             }
         }
         // utilizamos el catch para capturar los errores que puedan surgir

@@ -2,7 +2,6 @@ package cliente.udp;
 
 import cliente.interfaces.ReceptorMensaje;
 import cliente.mensajes.MensajeTexto;
-import conexion.ConexionCliente;
 
 import java.net.*;
 import java.io.*;
@@ -13,11 +12,11 @@ public class ClienteEscuchaUDP extends Thread {
     protected final int MAX_BUFFER=256;
     protected DatagramSocket socket;
     protected DatagramPacket servPaquete;
-    private final ReceptorMensaje receptor;
+    private final ReceptorMensaje receptorMensaje;
     
-    public ClienteEscuchaUDP(DatagramSocket socket, ReceptorMensaje receptor){
+    public ClienteEscuchaUDP(DatagramSocket socket, ReceptorMensaje receptorMensaje){
         this.socket = socket;
-        this.receptor = receptor;
+        this.receptorMensaje = receptorMensaje;
         System.out.println("CLIENTE ESCUCHANDO EN EL PUERTO (UDP): " + socket.getLocalPort());
     }
     public void run() {
@@ -35,7 +34,7 @@ public class ClienteEscuchaUDP extends Thread {
                         new BufferedInputStream(byteStream));
                 MensajeTexto mensajeTexto = (MensajeTexto) objectStream.readObject();
                 // Lo mostramos por pantalla
-                receptor.recibirMensaje(mensajeTexto);
+                receptorMensaje.recibirMensaje(mensajeTexto);
                 objectStream.close();
             }
         }
