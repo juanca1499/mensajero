@@ -50,7 +50,7 @@ public class MensajeroServidorGUI extends MensajeroGUI {
                 MensajeTexto mensaje = new MensajeTexto(texto);
                 enviador.enviarMensaje(mensaje);
                 txtAreaMensaje.setText("");
-                txtAreaLogs.append("\n<<[SERVIDOR]>>");
+                txtAreaLogs.append("\n\n<<[SERVIDOR]>>");
                 txtAreaLogs.append("\n" + mensaje);
             } else {
                 // Missing code

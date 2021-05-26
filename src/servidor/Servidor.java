@@ -53,34 +53,35 @@ public class Servidor implements EnviadorMensaje, ReceptorMensaje {
         if(mensaje.getDestino() == null) {
             mensaje.setOrigen("SERVIDOR");
             for(ConexionCliente conexionCliente : listaClientes) {
-                enviarMensaje(conexionCliente, mensaje);
+                enviarMensajeUDP(conexionCliente, mensaje);
             }
         } else {
             // Se envía a un cliente específico.
             ConexionCliente conexionCliente = buscarCliente(mensaje.getDestino());
-            enviarMensaje(conexionCliente,mensaje);
+            enviarMensajeUDP(conexionCliente,mensaje);
         }
     }
 
     @Override
     public void enviarArchivo(MensajeArchivo archivo) {
-
+        // Se hace un broadcast a todos los clientes conectados.
+        if(archivo.getDestino() == null) {
+            archivo.setOrigen("SERVIDOR");
+            for(ConexionCliente conexionCliente : listaClientes) {
+                enviarMensajeTCP(conexionCliente, archivo);
+            }
+        } else {
+            // Se envía a un cliente específico.
+            ConexionCliente conexionCliente = buscarCliente(archivo.getDestino());
+            enviarMensajeTCP(conexionCliente,archivo);
+        }
     }
 
     @Override
     public void recibirMensaje(MensajeTexto mensaje) {
         impresora.imprimirMensaje(mensaje);
         // Se hace un broadcast a todos los clientes conectados.
-        if(mensaje.getDestino() == null) {
-            mensaje.setOrigen("SERVIDOR");
-            for(ConexionCliente conexionCliente : listaClientes) {
-                enviarMensaje(conexionCliente, mensaje);
-            }
-        } else {
-            // Se envía a un cliente específico.
-            ConexionCliente conexionCliente = buscarCliente(mensaje.getDestino());
-            enviarMensaje(conexionCliente,mensaje);
-        }
+        enviarMensaje(mensaje);
     }
 
     @Override
@@ -88,16 +89,7 @@ public class Servidor implements EnviadorMensaje, ReceptorMensaje {
         System.out.println("UN ARCHIVO ANDA POR AQUÍ");
         impresora.imprimirMensaje(archivo);
         // Se hace un broadcast a todos los clientes conectados.
-        if(archivo.getDestino() == null) {
-            archivo.setOrigen("SERVIDOR");
-            for(ConexionCliente conexionCliente : listaClientes) {
-                enviarMensaje(conexionCliente, archivo);
-            }
-        } else {
-            // Se envía a un cliente específico.
-            ConexionCliente conexionCliente = buscarCliente(archivo.getDestino());
-            enviarMensaje(conexionCliente,archivo);
-        }
+        enviarArchivo(archivo);
     }
 
     public void agregarCliente(ConexionCliente cliente) {
@@ -117,18 +109,20 @@ public class Servidor implements EnviadorMensaje, ReceptorMensaje {
         return conexionServidor;
     }
 
-    private void enviarMensaje(ConexionCliente conexionCliente, Mensaje mensaje) {
+    private void enviarMensajeUDP(ConexionCliente conexionCliente, Mensaje mensaje) {
         try {
-            if(mensaje instanceof MensajeTexto) {
-                // Los mensajes de texto se envían utilizando el protocolo UDP.
-                servidorEnviaUDP = new ServidorEnviaUDP(conexionCliente);
-                servidorEnviaUDP.enviar((MensajeTexto) mensaje);
-            } else if(mensaje instanceof MensajeArchivo) {
-                // Los archivos se envían utilizando el protocolo TCP.
-                servidorEnviaTCP = new ServidorEnviaTCP(conexionCliente);
-                servidorEnviaTCP.enviar((MensajeArchivo)mensaje);
-            }
+            servidorEnviaUDP = new ServidorEnviaUDP(conexionCliente);
+            servidorEnviaUDP.enviar((MensajeTexto) mensaje);
         } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void enviarMensajeTCP(ConexionCliente conexionCliente, Mensaje mensaje) {
+        try {
+            servidorEnviaTCP = new ServidorEnviaTCP(conexionCliente);
+            servidorEnviaTCP.enviar((MensajeArchivo) mensaje);
+        } catch(Exception ex) {
             ex.printStackTrace();
         }
     }
