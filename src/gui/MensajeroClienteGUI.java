@@ -63,12 +63,13 @@ public class MensajeroClienteGUI extends MensajeroGUI {
     private class EnviarMensaje implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            // Se enviará un mensaje de texto.
             if(!archivoAdjunto) {
+                // Se enviará un mensaje de texto.
                 String texto = txtAreaMensaje.getText();
                 MensajeTexto mensaje = new MensajeTexto(texto);
                 enviador.enviarMensaje(mensaje);
                 txtAreaMensaje.setText("");
+                txtAreaMensajesPropios.append("\n\n<<" + mensaje.getFecha().toString() + ">>");
                 txtAreaMensajesPropios.append("\n" + mensaje);
             } else {
                 // Se enviará un archivo.
@@ -78,6 +79,9 @@ public class MensajeroClienteGUI extends MensajeroGUI {
                 enviador.enviarArchivo(mensajeArchivo);
                 archivoAdjunto = false;
                 txtAreaMensaje.setEnabled(true);
+                txtAreaMensajesPropios.append("\n\n<<" + mensajeArchivo.getFecha().toString() + ">>");
+                txtAreaMensajesPropios.append("\nARCHIVO ENVIADO:");
+                txtAreaMensajesPropios.append("\n" + mensajeArchivo);
                 lblStatus.setText("Listo");
             }
         }
@@ -94,7 +98,7 @@ public class MensajeroClienteGUI extends MensajeroGUI {
             MensajeArchivo msjArchivo = (MensajeArchivo) mensaje;
             txtAreaMensajesExternos.append("\n\n[" + mensaje.getOrigen() + "]");
             txtAreaMensajesExternos.append("\n<<" + mensaje.getFecha().toString() + ">>");
-            txtAreaMensajesExternos.append("\n" + "Se recibió un archivo: " + msjArchivo.getArchivo().getName());
+            txtAreaMensajesExternos.append("\nSe recibió un archivo: \n" + msjArchivo);
         }
     }
 }

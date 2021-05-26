@@ -14,6 +14,7 @@ import servidor.tcp.ServidorEscuchaTCP;
 import servidor.udp.ServidorEnviaUDP;
 import servidor.udp.ServidorEscuchaUDP;
 
+import java.io.FileInputStream;
 import java.net.DatagramSocket;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +69,15 @@ public class Servidor implements EnviadorMensaje, ReceptorMensaje {
         if(archivo.getDestino() == null) {
             archivo.setOrigen("SERVIDOR");
             for(ConexionCliente conexionCliente : listaClientes) {
-                enviarMensajeTCP(conexionCliente, archivo);
+                try {
+                    FileInputStream fileInput = new FileInputStream(archivo.getArchivo());
+                    byte[] bytesArchivo = new byte[fileInput.available()];
+                    fileInput.read(bytesArchivo);
+                    archivo.setBytes(bytesArchivo);
+                    enviarMensajeTCP(conexionCliente, archivo);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
         } else {
             // Se envía a un cliente específico.
@@ -80,7 +89,6 @@ public class Servidor implements EnviadorMensaje, ReceptorMensaje {
     @Override
     public void recibirMensaje(MensajeTexto mensaje) {
         impresora.imprimirMensaje(mensaje);
-        // Se hace un broadcast a todos los clientes conectados.
         enviarMensaje(mensaje);
     }
 
@@ -88,7 +96,6 @@ public class Servidor implements EnviadorMensaje, ReceptorMensaje {
     public void recibirArchivo(MensajeArchivo archivo) {
         System.out.println("UN ARCHIVO ANDA POR AQUÍ");
         impresora.imprimirMensaje(archivo);
-        // Se hace un broadcast a todos los clientes conectados.
         enviarArchivo(archivo);
     }
 

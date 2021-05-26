@@ -31,4 +31,9 @@ public class MensajeArchivo extends Mensaje implements Serializable {
     public void setBytes(byte[] bytes) {
         this.bytes = bytes;
     }
+
+    @Override
+    public String toString() {
+        return archivo.getName();
+    }
 }

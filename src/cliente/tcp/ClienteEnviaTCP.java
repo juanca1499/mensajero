@@ -18,16 +18,14 @@ public class ClienteEnviaTCP {
     public ClienteEnviaTCP(ConexionServidor conexionServidor) throws Exception{
         PUERTO_SERVER = conexionServidor.getPuertoTCP();
         IP_SERVIDOR = conexionServidor.getIp();
-
-        // Instanciamos un socket con la dirección del destino y el
-        // puerto que vamos a utilizar para la comunicación.
-        socket = new Socket(IP_SERVIDOR,PUERTO_SERVER);
     }
     
     public void enviar(MensajeArchivo mensajeArchivo) {
-
         // Declaramos un bloque try y catch para controlar la ejecución del subprograma
         try {
+            // Instanciamos un socket con la dirección del destino y el
+            // puerto que vamos a utilizar para la comunicación.
+            socket = new Socket(IP_SERVIDOR,PUERTO_SERVER);
             System.out.println("\n\nENVIANDO MENSAJE DESDE CLIENTE " + mensajeArchivo.getOrigen() +
             " CON DESTINO AL USUARIO " + mensajeArchivo.getDestino());
             // get the output stream from the socket.
@@ -36,6 +34,7 @@ public class ClienteEnviaTCP {
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
             objectOutputStream.writeObject(mensajeArchivo);
             objectOutputStream.flush();
+            socket.close();
         }
         // utilizamos el catch para capturar los errores que puedan surgir
         catch (Exception e) {

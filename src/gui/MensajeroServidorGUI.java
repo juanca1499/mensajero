@@ -4,11 +4,13 @@ import cliente.interfaces.EnviadorMensaje;
 import cliente.mensajes.Mensaje;
 import cliente.mensajes.MensajeArchivo;
 import cliente.mensajes.MensajeTexto;
+import utilidades.RutaUtilidades;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 public class MensajeroServidorGUI extends MensajeroGUI {
 
@@ -51,11 +53,19 @@ public class MensajeroServidorGUI extends MensajeroGUI {
                 enviador.enviarMensaje(mensaje);
                 txtAreaMensaje.setText("");
                 txtAreaLogs.append("\n\n<<[SERVIDOR]>>");
+                txtAreaLogs.append("\n<<" + mensaje.getFecha().toString() + ">>");
+                txtAreaLogs.append("\nSE ENVIÓ UN MENSAJE A TODOS LOS CLIENTES:");
                 txtAreaLogs.append("\n" + mensaje);
             } else {
-                // Missing code
+                String ruta = RutaUtilidades.formatearRuta(rutaArchivo);
+                MensajeArchivo mensajeArchivo = new MensajeArchivo(new File(ruta));
+                enviador.enviarArchivo(mensajeArchivo);
                 archivoAdjunto = false;
                 txtAreaMensaje.setEnabled(true);
+                txtAreaLogs.append("\n\n<<[SERVIDOR]>>");
+                txtAreaLogs.append("\n<<" + mensajeArchivo.getFecha().toString() + ">>");
+                txtAreaLogs.append("\nSE ENVIÓ UN ARCHIVO A TODOS LOS CLIENTES:");
+                txtAreaLogs.append("\n" + mensajeArchivo);
                 lblStatus.setText("Listo");
             }
         }
@@ -66,13 +76,14 @@ public class MensajeroServidorGUI extends MensajeroGUI {
         if (mensaje instanceof MensajeTexto) {
             MensajeTexto msjTexto = (MensajeTexto) mensaje;
             txtAreaLogs.append("\n\n[" + msjTexto.getOrigen() + "]" + " ---> " + "[" + msjTexto.getDestino() + "]");
-            txtAreaLogs.append("\n" + msjTexto.getFecha().toString());
+            txtAreaLogs.append("\n<<" + mensaje.getFecha().toString() + ">>");
             txtAreaLogs.append("\n" + msjTexto);
         } else if (mensaje instanceof MensajeArchivo) {
             MensajeArchivo msjArchivo = (MensajeArchivo) mensaje;
             txtAreaLogs.append("\n\n[" + msjArchivo.getOrigen() + "]" + " ---> " + "[" + msjArchivo.getDestino() + "]");
-            txtAreaLogs.append("\n"+ msjArchivo.getFecha().toString());
-            txtAreaLogs.append("\n"+ msjArchivo.getArchivo().toString());
+            txtAreaLogs.append("\n<<" + mensaje.getFecha().toString() + ">>");
+            txtAreaLogs.append("\nSE ENVIÓ UN ARCHIVO:");
+            txtAreaLogs.append("\n"+ msjArchivo);
         }
     }
 }

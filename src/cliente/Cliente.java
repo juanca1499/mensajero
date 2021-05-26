@@ -66,17 +66,18 @@ public class Cliente implements EnviadorMensaje, ReceptorMensaje {
     @Override
     public void enviarArchivo(MensajeArchivo archivo) {
         archivo.setOrigen(nombreUsuario);
+        // El siguiente código será removido en caso de alcanzar a implementar la funcionalidad
+        // de escoger el cliente a enviar desde la GUI.
+        if(archivo.getOrigen().equals("Juca")) {
+            archivo.setDestino("Juanito");
+        } else {
+            archivo.setDestino("Juca");
+        }
         try {
             FileInputStream fileInput = new FileInputStream(archivo.getArchivo());
-            byte bytesArchivo[] = new byte[fileInput.available()];
+            byte[] bytesArchivo = new byte[fileInput.available()];
             fileInput.read(bytesArchivo);
             archivo.setBytes(bytesArchivo);
-
-            if(archivo.getOrigen().equals("Juca")) {
-                archivo.setDestino("Juanito");
-            } else {
-                archivo.setDestino("Juca");
-            }
             clienteEnviaTCP.enviar(archivo);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -90,7 +91,8 @@ public class Cliente implements EnviadorMensaje, ReceptorMensaje {
 
     @Override
     public void recibirArchivo(MensajeArchivo archivo) {
-        File archivoDestino = Alerta.pedirUbicacion(clienteGUI);
+        File archivoDestino = Alerta.pedirUbicacion(clienteGUI,
+        archivo.getArchivo().getName());
         if(archivoDestino != null) {
             impresora.imprimirMensaje(archivo);
             try {

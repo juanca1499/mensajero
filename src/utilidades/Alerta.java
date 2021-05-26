@@ -7,9 +7,10 @@ import java.io.File;
 
 public class Alerta {
 
-    public static File pedirUbicacion(Component componente) {
+    public static File pedirUbicacion(Component componente, String nombreArchivo) {
         JFileChooser selector = new JFileChooser();
         selector.setDialogTitle("Indica la ruta para guardar el archivo:");
+        selector.setSelectedFile(new File(nombreArchivo));
         int eleccion = selector.showSaveDialog(componente);
         if(eleccion == JFileChooser.APPROVE_OPTION) {
             return selector.getSelectedFile();
