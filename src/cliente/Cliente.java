@@ -1,5 +1,6 @@
 package cliente;
 
+import cliente.mensajes.MensajeVideo;
 import cliente.tcp.ClienteEscuchaTCP;
 import gui.MensajeroClienteGUI;
 import cliente.interfaces.EnviadorMensaje;
@@ -103,6 +104,16 @@ public class Cliente implements EnviadorMensaje, ReceptorMensaje {
                 ex.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void enviarVideo(MensajeVideo frame) {
+
+    }
+
+    @Override
+    public void recibirVideo(MensajeVideo frame) {
+
     }
 
     public String getNombreUsuario() {

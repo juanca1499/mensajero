@@ -1,6 +1,7 @@
 package servidor;
 
 import cliente.mensajes.Mensaje;
+import cliente.mensajes.MensajeVideo;
 import conexion.ConexionCliente;
 import cliente.interfaces.EnviadorMensaje;
 import cliente.interfaces.ImpresoraChat;
@@ -97,6 +98,16 @@ public class Servidor implements EnviadorMensaje, ReceptorMensaje {
         System.out.println("UN ARCHIVO ANDA POR AQUÍ");
         impresora.imprimirMensaje(archivo);
         enviarArchivo(archivo);
+    }
+
+    @Override
+    public void enviarVideo(MensajeVideo frame) {
+
+    }
+
+    @Override
+    public void recibirVideo(MensajeVideo frame) {
+
     }
 
     public void agregarCliente(ConexionCliente cliente) {

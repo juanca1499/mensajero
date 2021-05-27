@@ -1,5 +1,10 @@
 package gui;
 
+import cliente.interfaces.EnviadorMensaje;
+import cliente.interfaces.ImpresoraChat;
+import cliente.interfaces.ReceptorMensaje;
+import cliente.mensajes.Mensaje;
+import cliente.mensajes.MensajeVideo;
 import com.github.sarxos.webcam.Webcam;
 
 import javax.swing.*;
@@ -7,7 +12,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class VideollamadaGUI extends JFrame {
+public class VideollamadaGUI extends JFrame implements ImpresoraChat {
     private JPanel panelGeneral;
     private JPanel panelVideo;
     private JPanel panelOpciones;
@@ -89,6 +94,13 @@ public class VideollamadaGUI extends JFrame {
         public void actionPerformed(ActionEvent e) {
             ventana.detenerVideo();
             ventana.dispose();
+        }
+    }
+
+    @Override
+    public void imprimirMensaje(Mensaje mensaje) {
+        if(mensaje instanceof MensajeVideo) {
+            // TODO
         }
     }
 }

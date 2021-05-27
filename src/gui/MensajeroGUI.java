@@ -1,21 +1,11 @@
 package gui;
 
-import cliente.interfaces.EnviadorMensaje;
 import cliente.interfaces.ImpresoraChat;
-import cliente.interfaces.ReceptorMensaje;
-import cliente.mensajes.EnviadorMensajeCliente;
 import cliente.mensajes.Mensaje;
-import cliente.mensajes.MensajeArchivo;
-import cliente.mensajes.MensajeTexto;
-import cliente.tcp.ClienteTCP;
-import cliente.udp.ClienteUDP;
-import servidor.tcp.ServidorTCP;
-import servidor.udp.ServidorUDP;
 import utilidades.Alerta;
 
 import javax.swing.*;
 import javax.swing.border.Border;
-import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

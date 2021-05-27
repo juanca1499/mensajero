@@ -12,6 +12,7 @@ import java.io.File;
 
 public class MensajeroClienteGUI extends MensajeroGUI {
 
+    private VideollamadaGUI videollamadaGUI;
     private JButton btnVideollamada;
     private JTextArea txtAreaMensajesPropios;
     private JTextArea txtAreaMensajesExternos;
@@ -65,11 +66,13 @@ public class MensajeroClienteGUI extends MensajeroGUI {
             if(!archivoAdjunto) {
                 // Se enviará un mensaje de texto.
                 String texto = txtAreaMensaje.getText();
-                MensajeTexto mensaje = new MensajeTexto(texto);
-                enviador.enviarMensaje(mensaje);
-                txtAreaMensaje.setText("");
-                txtAreaMensajesPropios.append("\n\n<<" + mensaje.getFecha().toString() + ">>");
-                txtAreaMensajesPropios.append("\n" + mensaje);
+                if(!texto.equals("")) {
+                    MensajeTexto mensaje = new MensajeTexto(texto);
+                    enviador.enviarMensaje(mensaje);
+                    txtAreaMensaje.setText("");
+                    txtAreaMensajesPropios.append("\n\n<<" + mensaje.getFecha().toString() + ">>");
+                    txtAreaMensajesPropios.append("\n" + mensaje);
+                }
             } else {
                 // Se enviará un archivo.
                 // Se convierte la ruta del archivo a un formato que acepta Java.
@@ -90,7 +93,7 @@ public class MensajeroClienteGUI extends MensajeroGUI {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            VideollamadaGUI videollamadaGUI = new VideollamadaGUI();
+            videollamadaGUI = new VideollamadaGUI();
             videollamadaGUI.setVisible(true);
         }
     }
@@ -107,6 +110,8 @@ public class MensajeroClienteGUI extends MensajeroGUI {
             txtAreaMensajesExternos.append("\n\n[" + mensaje.getOrigen() + "]");
             txtAreaMensajesExternos.append("\n<<" + mensaje.getFecha().toString() + ">>");
             txtAreaMensajesExternos.append("\nSe recibió un archivo: \n" + msjArchivo);
+        } else if(mensaje instanceof MensajeVideo) {
+            videollamadaGUI.imprimirMensaje(mensaje);
         }
     }
 }
