@@ -93,7 +93,7 @@ public class MensajeroClienteGUI extends MensajeroGUI {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            videollamadaGUI = new VideollamadaGUI();
+            videollamadaGUI = new VideollamadaGUI(usuario, enviador);
             videollamadaGUI.setVisible(true);
         }
     }
@@ -111,6 +111,8 @@ public class MensajeroClienteGUI extends MensajeroGUI {
             txtAreaMensajesExternos.append("\n<<" + mensaje.getFecha().toString() + ">>");
             txtAreaMensajesExternos.append("\nSe recibió un archivo: \n" + msjArchivo);
         } else if(mensaje instanceof MensajeVideo) {
+            videollamadaGUI.imprimirMensaje(mensaje);
+        } else if(mensaje instanceof MensajeAudio) {
             videollamadaGUI.imprimirMensaje(mensaje);
         }
     }

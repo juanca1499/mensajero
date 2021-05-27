@@ -1,11 +1,14 @@
 package cliente.udp;
 
 import cliente.interfaces.ReceptorMensaje;
+import cliente.mensajes.Mensaje;
 import cliente.mensajes.MensajeTexto;
+import cliente.mensajes.MensajeVideo;
 
 import java.net.*;
 import java.io.*;
- 
+import java.nio.file.Paths;
+
 //declaramos la clase udp escucha
 public class ClienteEscuchaUDP extends Thread {
     //Definimos el sockets, número de bytes del buffer, y mensaje.
@@ -32,9 +35,8 @@ public class ClienteEscuchaUDP extends Thread {
                 ByteArrayInputStream byteStream = new ByteArrayInputStream(mensaje_bytes);
                 ObjectInputStream objectStream = new ObjectInputStream(
                         new BufferedInputStream(byteStream));
-                MensajeTexto mensajeTexto = (MensajeTexto) objectStream.readObject();
-                // Lo mostramos por pantalla
-                receptorMensaje.recibirMensaje(mensajeTexto);
+                Mensaje mensaje = (Mensaje) objectStream.readObject();
+                reedireccionarMensaje(mensaje);
                 objectStream.close();
             }
         }
@@ -42,6 +44,14 @@ public class ClienteEscuchaUDP extends Thread {
             e.printStackTrace();
             System.err.println("Excepcion C: "+e.getMessage());
             System.exit(1);
+        }
+    }
+
+    private void reedireccionarMensaje(Mensaje mensaje) {
+        if(mensaje instanceof MensajeTexto) {
+            receptorMensaje.recibirMensaje((MensajeTexto) mensaje);
+        } else if(mensaje instanceof MensajeVideo) {
+            receptorMensaje.recibirVideo((MensajeVideo) mensaje);
         }
     }
 }

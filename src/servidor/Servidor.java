@@ -95,19 +95,19 @@ public class Servidor implements EnviadorMensaje, ReceptorMensaje {
 
     @Override
     public void recibirArchivo(MensajeArchivo archivo) {
-        System.out.println("UN ARCHIVO ANDA POR AQUÍ");
         impresora.imprimirMensaje(archivo);
         enviarArchivo(archivo);
     }
 
     @Override
     public void enviarVideo(MensajeVideo frame) {
-
+        ConexionCliente conexionCliente = buscarCliente(frame.getDestino());
+        enviarMensajeTCP(conexionCliente,frame);
     }
 
     @Override
     public void recibirVideo(MensajeVideo frame) {
-
+        enviarVideo(frame);
     }
 
     public void agregarCliente(ConexionCliente cliente) {
@@ -130,7 +130,7 @@ public class Servidor implements EnviadorMensaje, ReceptorMensaje {
     private void enviarMensajeUDP(ConexionCliente conexionCliente, Mensaje mensaje) {
         try {
             servidorEnviaUDP = new ServidorEnviaUDP(conexionCliente);
-            servidorEnviaUDP.enviar((MensajeTexto) mensaje);
+            servidorEnviaUDP.enviar(mensaje);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -139,7 +139,7 @@ public class Servidor implements EnviadorMensaje, ReceptorMensaje {
     private void enviarMensajeTCP(ConexionCliente conexionCliente, Mensaje mensaje) {
         try {
             servidorEnviaTCP = new ServidorEnviaTCP(conexionCliente);
-            servidorEnviaTCP.enviar((MensajeArchivo) mensaje);
+            servidorEnviaTCP.enviar(mensaje);
         } catch(Exception ex) {
             ex.printStackTrace();
         }

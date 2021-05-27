@@ -1,4 +1,5 @@
 package cliente.tcp;
+import cliente.mensajes.Mensaje;
 import cliente.mensajes.MensajeArchivo;
 import conexion.ConexionServidor;
 
@@ -13,26 +14,25 @@ public class ClienteEnviaTCP {
     protected Socket socket;
     protected final int PUERTO_SERVER;
     protected final String IP_SERVIDOR;
-    private ObjectOutputStream objOut;
     
     public ClienteEnviaTCP(ConexionServidor conexionServidor) throws Exception{
         PUERTO_SERVER = conexionServidor.getPuertoTCP();
         IP_SERVIDOR = conexionServidor.getIp();
     }
     
-    public void enviar(MensajeArchivo mensajeArchivo) {
+    public void enviar(Mensaje mensaje) {
         // Declaramos un bloque try y catch para controlar la ejecución del subprograma
         try {
             // Instanciamos un socket con la dirección del destino y el
             // puerto que vamos a utilizar para la comunicación.
             socket = new Socket(IP_SERVIDOR,PUERTO_SERVER);
-            System.out.println("\n\nENVIANDO MENSAJE DESDE CLIENTE " + mensajeArchivo.getOrigen() +
-            " CON DESTINO AL USUARIO " + mensajeArchivo.getDestino());
+            System.out.println("\n\nENVIANDO MENSAJE DESDE CLIENTE " + mensaje.getOrigen() +
+            " CON DESTINO AL USUARIO " + mensaje.getDestino());
             // get the output stream from the socket.
             OutputStream outputStream = socket.getOutputStream();
             // create an object output stream from the output stream so we can send an object through it
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-            objectOutputStream.writeObject(mensajeArchivo);
+            objectOutputStream.writeObject(mensaje);
             objectOutputStream.flush();
             socket.close();
         }

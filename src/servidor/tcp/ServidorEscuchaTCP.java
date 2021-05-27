@@ -1,7 +1,9 @@
 package servidor.tcp;
 
 import cliente.interfaces.ReceptorMensaje;
+import cliente.mensajes.Mensaje;
 import cliente.mensajes.MensajeArchivo;
+import cliente.mensajes.MensajeVideo;
 import conexion.ConexionServidor;
 
 import java.net.*;
@@ -35,9 +37,9 @@ public class ServidorEscuchaTCP extends Thread {
                 // Declaramos e instanciamos el objeto DataInputStream
                 // que nos valdrá para recibir datos del cliente
                 objIn = new ObjectInputStream(socketCliente.getInputStream());
-                MensajeArchivo mensajeArchivo = (MensajeArchivo) objIn.readObject();
+                Mensaje mensaje = (Mensaje) objIn.readObject();
                 System.out.println("\n\nArchivo recibido de la direccion " + socketCliente.getInetAddress() + ":" + socketCliente.getPort());
-                receptorMensaje.recibirArchivo(mensajeArchivo);
+                reedireccionarMensaje(mensaje);
                 objIn.close();
             }
         }
@@ -48,6 +50,14 @@ public class ServidorEscuchaTCP extends Thread {
             // programa
             System.err.println(e.getMessage());
             System.exit(1);
+        }
+    }
+
+    private void reedireccionarMensaje(Mensaje mensaje) {
+        if(mensaje instanceof MensajeArchivo) {
+            receptorMensaje.recibirArchivo((MensajeArchivo) mensaje);
+        } else if(mensaje instanceof MensajeVideo) {
+            receptorMensaje.recibirVideo((MensajeVideo) mensaje);
         }
     }
 }

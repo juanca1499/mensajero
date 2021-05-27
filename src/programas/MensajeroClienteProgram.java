@@ -21,7 +21,7 @@ public class MensajeroClienteProgram {
         Cliente cliente = new Cliente(new ConexionCliente("192.168.0.15","Juca",40001,50001));
         cliente.setServidor(conexionServidor);
 
-//        Cliente cliente2 = new Cliente(new ConexionCliente("192.168.0.15","Juanito",40002,50002));
-//        cliente2.setServidor(conexionServidor);
+        Cliente cliente2 = new Cliente(new ConexionCliente("192.168.0.15","Juanito",40002,50002));
+        cliente2.setServidor(conexionServidor);
     }
 }

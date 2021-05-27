@@ -1,24 +1,26 @@
 package cliente.mensajes;
 
+import javax.swing.*;
 import java.awt.*;
+import java.io.Serializable;
 
-public class MensajeVideo extends Mensaje {
-    private Image frame;
+public class MensajeVideo extends Mensaje implements Serializable {
+    private ImageIcon frame;
 
-    public MensajeVideo(Image frame) {
+    public MensajeVideo(ImageIcon frame) {
         this.frame = frame;
     }
 
-    public MensajeVideo(String origen, String destino, Image frame) {
+    public MensajeVideo(String origen, String destino, ImageIcon frame) {
         super(origen,destino);
         this.frame = frame;
     }
 
-    public Image getFrame() {
+    public ImageIcon getFrame() {
         return frame;
     }
 
-    public void setFrame(Image frame) {
+    public void setFrame(ImageIcon frame) {
         this.frame = frame;
     }
 

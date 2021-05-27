@@ -2,8 +2,8 @@ package gui;
 
 import cliente.interfaces.EnviadorMensaje;
 import cliente.interfaces.ImpresoraChat;
-import cliente.interfaces.ReceptorMensaje;
 import cliente.mensajes.Mensaje;
+import cliente.mensajes.MensajeAudio;
 import cliente.mensajes.MensajeVideo;
 import com.github.sarxos.webcam.Webcam;
 
@@ -16,16 +16,21 @@ public class VideollamadaGUI extends JFrame implements ImpresoraChat {
     private JPanel panelGeneral;
     private JPanel panelVideo;
     private JPanel panelOpciones;
-    private JLabel lblImagen;
+    private JLabel lblImagenLocal;
+    private JLabel lblImagenExterna;
     private JButton btnColgarVllamada;
     //private JButton btnIniciarVllamada;
     private Webcam webcam;
     private CapturadorVideo capturadorVideo;
+    private EnviadorMensaje enviador;
+    private String usuario;
 
-    public VideollamadaGUI() {
+    public VideollamadaGUI(String usuario, EnviadorMensaje enviador) {
         super("Mensajero Fenix");
+        this.usuario = usuario;
+        this.enviador = enviador;
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(400,400);
+        setSize(600,600);
         setLayout(new BorderLayout());
         setResizable(false);
         setLocationRelativeTo(null);
@@ -38,9 +43,11 @@ public class VideollamadaGUI extends JFrame implements ImpresoraChat {
         panelGeneral = new JPanel(new BorderLayout());
         add(panelGeneral, BorderLayout.CENTER);
 
-        panelVideo = new JPanel(new BorderLayout());
-        lblImagen = new JLabel();
-        panelVideo.add(lblImagen, BorderLayout.CENTER);
+        panelVideo = new JPanel(new FlowLayout());
+        lblImagenLocal = new JLabel();
+        lblImagenExterna = new JLabel();
+        panelVideo.add(lblImagenLocal);
+        panelVideo.add(lblImagenExterna);
         panelGeneral.add(panelVideo,BorderLayout.CENTER);
 
         panelOpciones = new JPanel(new FlowLayout());
@@ -68,13 +75,20 @@ public class VideollamadaGUI extends JFrame implements ImpresoraChat {
         webcam.close();
     }
 
+    private void enviarFrame(ImageIcon frame) {
+        MensajeVideo mensajeVideo = new MensajeVideo(frame);
+        enviador.enviarVideo(mensajeVideo);
+    }
+
     private class CapturadorVideo extends Thread {
         @Override
         public void run() {
             while (true) {
                 try {
                     Image frame = webcam.getImage();
-                    lblImagen.setIcon(new ImageIcon(frame));
+                    ImageIcon icono = new ImageIcon(frame);
+                    enviarFrame(icono);
+                    lblImagenLocal.setIcon(icono);
                     Thread.sleep(50);
                 } catch (InterruptedException ex) {
                     ex.printStackTrace();
@@ -100,7 +114,10 @@ public class VideollamadaGUI extends JFrame implements ImpresoraChat {
     @Override
     public void imprimirMensaje(Mensaje mensaje) {
         if(mensaje instanceof MensajeVideo) {
-            // TODO
+            // Se imprime el frame recibido del otro cliente.
+            lblImagenLocal.setIcon(((MensajeVideo) mensaje).getFrame());
+        } else if(mensaje instanceof MensajeAudio) {
+            // Code
         }
     }
 }

@@ -1,12 +1,14 @@
 package cliente.udp;
 
+import cliente.mensajes.Mensaje;
 import cliente.mensajes.MensajeTexto;
 import conexion.ConexionCliente;
 import conexion.ConexionServidor;
 
 import java.net.*;
 import java.io.*;
- 
+import java.util.zip.GZIPOutputStream;
+
 //declaramos la clase udp envia
 public class ClienteEnviaUDP {
     //Definimos el sockets, número de bytes del buffer, y mensaje.
@@ -23,7 +25,7 @@ public class ClienteEnviaUDP {
         PUERTO_SERVIDOR= conexionServidor.getPuertoUDP();
     }
 
-    public void enviar(MensajeTexto mensaje) {
+    public void enviar(Mensaje mensaje) {
         byte[] mensaje_bytes;
         try {
             System.out.println("\n\nENVIANDO MENSAJE DESDE CLIENTE " + mensaje.getOrigen() + " CON DESTINO AL USUARIO " + mensaje.getDestino());
@@ -35,8 +37,8 @@ public class ClienteEnviaUDP {
             paquete = new DatagramPacket(mensaje_bytes,mensaje_bytes.length,address,PUERTO_SERVIDOR);
             socket.send(paquete);
         }
-        catch (Exception e) {
-            System.err.println("Exception "+ e.getMessage());
+        catch (Exception ex) {
+            ex.printStackTrace();
             System.exit(1);
         }
     }

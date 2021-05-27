@@ -1,17 +1,15 @@
 package servidor.udp;
 
 import cliente.interfaces.ReceptorMensaje;
+import cliente.mensajes.Mensaje;
 import cliente.mensajes.MensajeTexto;
-import conexion.ConexionServidor;
+import cliente.mensajes.MensajeVideo;
 
 import java.net.*;
 import java.io.*;
 
 public class ServidorEscuchaUDP extends Thread {
     protected DatagramSocket socket;
-    protected int puertoCliente;
-    
-    protected InetAddress addressCliente;
     protected final int MAX_BUFFER=256;
     protected DatagramPacket paquete;
     protected byte[] mensaje_bytes;
@@ -34,17 +32,22 @@ public class ServidorEscuchaUDP extends Thread {
                 ByteArrayInputStream byteStream = new ByteArrayInputStream(mensaje_bytes);
                 ObjectInputStream objectStream = new ObjectInputStream(
                         new BufferedInputStream(byteStream));
-                MensajeTexto mensajeTexto = (MensajeTexto) objectStream.readObject();
-                // Lo mostramos por pantalla
-                receptorMensaje.recibirMensaje(mensajeTexto);
-                puertoCliente = paquete.getPort();
-                addressCliente = paquete.getAddress();
+                Mensaje mensaje = (Mensaje) objectStream.readObject();
+                reedireccionarMensaje(mensaje);
                 objectStream.close();
             }
         }
         catch (Exception e) {
             System.err.println(e.getMessage());
             System.exit(1);
+        }
+    }
+
+    private void reedireccionarMensaje(Mensaje mensaje) {
+        if(mensaje instanceof MensajeTexto) {
+            receptorMensaje.recibirMensaje((MensajeTexto) mensaje);
+        } else if(mensaje instanceof MensajeVideo) {
+            receptorMensaje.recibirVideo((MensajeVideo) mensaje);
         }
     }
 }

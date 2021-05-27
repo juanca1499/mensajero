@@ -1,5 +1,6 @@
 package servidor.tcp;
 import cliente.Cliente;
+import cliente.mensajes.Mensaje;
 import cliente.mensajes.MensajeArchivo;
 import conexion.ConexionCliente;
 import conexion.ConexionServidor;
@@ -26,12 +27,12 @@ public class ServidorEnviaTCP {
         socket = new Socket(IP_CLIENTE,PUERTO_CLIENTE);
     }
 
-    public void enviar(MensajeArchivo mensajeArchivo) {
+    public void enviar(Mensaje mensaje) {
         // Declaramos un bloque try y catch para controlar la ejecución del subprograma
         try {
             System.out.println("ENVIANDO MENSAJE DESDE SERVIDOR A LA DIRECCION:  " + IP_CLIENTE + ":" + PUERTO_CLIENTE);
             objOut = new ObjectOutputStream(socket.getOutputStream());
-            objOut.writeObject(mensajeArchivo);
+            objOut.writeObject(mensaje);
             objOut.flush();
             socket.close();
 //            File archivo = mensajeArchivo.getArchivo();

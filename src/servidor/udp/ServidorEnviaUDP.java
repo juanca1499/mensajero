@@ -1,5 +1,6 @@
 package servidor.udp;
 
+import cliente.mensajes.Mensaje;
 import cliente.mensajes.MensajeTexto;
 import conexion.ConexionCliente;
 import conexion.ConexionServidor;
@@ -25,7 +26,7 @@ public class ServidorEnviaUDP {
         socket = new DatagramSocket();
     }
 
-    public void enviar(MensajeTexto mensaje) {
+    public void enviar(Mensaje mensaje) {
         byte[] mensaje_bytes;
         try {
             System.out.println("ENVIANDO MENSAJE DESDE SERVIDOR A LA DIRECCION:  " + IP_DESTINO + ":" + PUERTO_DESTINO);

@@ -108,12 +108,18 @@ public class Cliente implements EnviadorMensaje, ReceptorMensaje {
 
     @Override
     public void enviarVideo(MensajeVideo frame) {
-
+        frame.setOrigen(nombreUsuario);
+        if(frame.getOrigen().equals("Juca")) {
+            frame.setDestino("Juanito");
+        } else {
+            frame.setDestino("Juca");
+        }
+        clienteEnviaTCP.enviar(frame);
     }
 
     @Override
     public void recibirVideo(MensajeVideo frame) {
-
+        impresora.imprimirMensaje(frame);
     }
 
     public String getNombreUsuario() {
