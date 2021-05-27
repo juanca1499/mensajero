@@ -1,9 +1,7 @@
 package gui;
 
 import cliente.interfaces.EnviadorMensaje;
-import cliente.interfaces.ImpresoraChat;
 import cliente.mensajes.*;
-import gui.MensajeroGUI;
 import utilidades.RutaUtilidades;
 
 import javax.swing.*;
@@ -58,6 +56,7 @@ public class MensajeroClienteGUI extends MensajeroGUI {
     protected void agregarEventos() {
         super.agregarEventos();
         btnEnviarMensaje.addActionListener(new EnviarMensaje());
+        btnVideollamada.addActionListener(new IniciarVieollamada());
     }
 
     private class EnviarMensaje implements ActionListener {
@@ -84,6 +83,15 @@ public class MensajeroClienteGUI extends MensajeroGUI {
                 txtAreaMensajesPropios.append("\n" + mensajeArchivo);
                 lblStatus.setText("Listo");
             }
+        }
+    }
+
+    private class IniciarVieollamada implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            VideollamadaGUI videollamadaGUI = new VideollamadaGUI();
+            videollamadaGUI.setVisible(true);
         }
     }
 

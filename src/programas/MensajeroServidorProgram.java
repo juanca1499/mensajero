@@ -13,8 +13,7 @@ public class MensajeroServidorProgram {
         servidor.agregarCliente(new ConexionCliente("192.168.0.15","Juca", 40001, 50001));
         // Se agrega el cliente Juanito a la lista de clientes conocidos.
         servidor.agregarCliente(new ConexionCliente("192.168.0.15","Juanito", 40002, 50002));
-        // TODO Check why when you first send a message from the server the program fails.
-        // TODO Last working date: May 24 2:34 a.m. There's an error for sending more than one file.
-        // TODO Last working date: May 24 2:34 a.m. Check why the program only sends files through juca user.
+        // TODO Check why the program sometimes crashes.
+        // TODO Investigate how to clean the buffer when sending files.
     }
 }
