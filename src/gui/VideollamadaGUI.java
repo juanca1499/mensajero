@@ -13,7 +13,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 
 public class VideollamadaGUI extends JFrame implements ImpresoraChat {
     private JPanel panelGeneral;
@@ -44,8 +43,8 @@ public class VideollamadaGUI extends JFrame implements ImpresoraChat {
         setLocationRelativeTo(null);
         cargarComponentes();
         agregarEventos();
-        iniciarVideo();
         iniciarAudio();
+        iniciarVideo();
     }
 
     private void cargarComponentes() {
@@ -140,26 +139,21 @@ public class VideollamadaGUI extends JFrame implements ImpresoraChat {
     private class CapturadorAudio extends Thread {
         @Override
         public void run() {
-            try {
-                ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
-                int numBytesLeer;
-                int tamanoChunck = 1024;
-                byte[] bytes = new byte[microfono.getBufferSize() / 5];
-                while (true) {
-                    numBytesLeer = microfono.read(bytes, 0, tamanoChunck);
-                    //  bytesRead += numBytesRead;
-                    // write the mic data to a stream for use later
-                    byteOutput.write(bytes, 0, numBytesLeer);
-                    // write mic data to stream for immediate playback
-                    //bocinas.write(bytes, 0, numBytesLeer);
-                    enviarSampleAudio(byteOutput.toByteArray());
-                    byteOutput.flush();
-                    Thread.sleep(50);
-                }
-            } catch (InterruptedException ie) {
-                ie.printStackTrace();
-            } catch (IOException eio) {
-                eio.printStackTrace();
+
+            ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
+            int numBytesLeer;
+            int tamanoChunck = 1024;
+            byte[] bytes = new byte[microfono.getBufferSize() / 5];
+            while (true) {
+                numBytesLeer = microfono.read(bytes, 0, tamanoChunck);
+                //  bytesRead += numBytesRead;
+                // write the mic data to a stream for use later
+                byteOutput.write(bytes, 0, numBytesLeer);
+                // write mic data to stream for immediate playback
+                bocinas.write(bytes, 0, numBytesLeer);
+                enviarSampleAudio(byteOutput.toByteArray());
+                System.out.println("SIZE DEL Array: " + byteOutput.size());
+                byteOutput.reset();
             }
         }
     }
