@@ -125,12 +125,18 @@ public class Cliente implements EnviadorMensaje, ReceptorMensaje {
 
     @Override
     public void enviarAudio(MensajeAudio sample) {
-
+        sample.setOrigen(nombreUsuario);
+        if(sample.getOrigen().equals("Juca")) {
+            sample.setDestino("Juanito");
+        } else {
+            sample.setDestino("Juca");
+        }
+        clienteEnviaUDP.enviar(sample);
     }
 
     @Override
     public void recibirAudio(MensajeAudio sample) {
-
+        impresora.imprimirMensaje(sample);
     }
 
     public String getNombreUsuario() {
