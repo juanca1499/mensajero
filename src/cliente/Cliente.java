@@ -1,5 +1,6 @@
 package cliente;
 
+import cliente.mensajes.MensajeAudio;
 import cliente.mensajes.MensajeVideo;
 import cliente.tcp.ClienteEscuchaTCP;
 import gui.MensajeroClienteGUI;
@@ -120,6 +121,16 @@ public class Cliente implements EnviadorMensaje, ReceptorMensaje {
     @Override
     public void recibirVideo(MensajeVideo frame) {
         impresora.imprimirMensaje(frame);
+    }
+
+    @Override
+    public void enviarAudio(MensajeAudio sample) {
+
+    }
+
+    @Override
+    public void recibirAudio(MensajeAudio sample) {
+
     }
 
     public String getNombreUsuario() {

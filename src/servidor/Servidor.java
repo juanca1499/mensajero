@@ -1,13 +1,10 @@
 package servidor;
 
-import cliente.mensajes.Mensaje;
-import cliente.mensajes.MensajeVideo;
+import cliente.mensajes.*;
 import conexion.ConexionCliente;
 import cliente.interfaces.EnviadorMensaje;
 import cliente.interfaces.ImpresoraChat;
 import cliente.interfaces.ReceptorMensaje;
-import cliente.mensajes.MensajeArchivo;
-import cliente.mensajes.MensajeTexto;
 import conexion.ConexionServidor;
 import gui.MensajeroServidorGUI;
 import servidor.tcp.ServidorEnviaTCP;
@@ -103,6 +100,16 @@ public class Servidor implements EnviadorMensaje, ReceptorMensaje {
     public void enviarVideo(MensajeVideo frame) {
         ConexionCliente conexionCliente = buscarCliente(frame.getDestino());
         enviarMensajeTCP(conexionCliente,frame);
+    }
+
+    @Override
+    public void enviarAudio(MensajeAudio sample) {
+
+    }
+
+    @Override
+    public void recibirAudio(MensajeAudio sample) {
+
     }
 
     @Override

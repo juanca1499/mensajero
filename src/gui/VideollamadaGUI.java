@@ -7,10 +7,12 @@ import cliente.mensajes.MensajeAudio;
 import cliente.mensajes.MensajeVideo;
 import com.github.sarxos.webcam.Webcam;
 
+import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.ByteArrayOutputStream;
 
 public class VideollamadaGUI extends JFrame implements ImpresoraChat {
     private JPanel panelGeneral;
@@ -22,6 +24,11 @@ public class VideollamadaGUI extends JFrame implements ImpresoraChat {
     //private JButton btnIniciarVllamada;
     private Webcam webcam;
     private CapturadorVideo capturadorVideo;
+    private CapturadorAudio capturadorAudio;
+    private AudioFormat formatoAudio;
+    private TargetDataLine microfono;
+    private SourceDataLine bocinas;
+
     private EnviadorMensaje enviador;
     private String usuario;
 
@@ -37,6 +44,7 @@ public class VideollamadaGUI extends JFrame implements ImpresoraChat {
         cargarComponentes();
         agregarEventos();
         iniciarVideo();
+        iniciarAudio();
     }
 
     private void cargarComponentes() {
@@ -75,9 +83,40 @@ public class VideollamadaGUI extends JFrame implements ImpresoraChat {
         webcam.close();
     }
 
+    private void iniciarAudio() {
+        try {
+            // Se especifica el formato del audio a ser enviado.
+            formatoAudio = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 44100,
+                    16, 2, 4, 44100, true);
+            // Se abre el microfono del dispositivo
+            microfono = AudioSystem.getTargetDataLine(formatoAudio);
+
+            DataLine.Info info = new DataLine.Info(TargetDataLine.class, formatoAudio);
+            microfono = (TargetDataLine) AudioSystem.getLine(info);
+            microfono.open(formatoAudio);
+            microfono.start();
+
+            // Se abren las bocinas del dispositivo
+            DataLine.Info dataLineInfo = new DataLine.Info(SourceDataLine.class, formatoAudio);
+            bocinas = (SourceDataLine) AudioSystem.getLine(dataLineInfo);
+            bocinas.open(formatoAudio);
+            bocinas.start();
+            capturadorAudio = new CapturadorAudio();
+            capturadorAudio.start();
+
+        } catch (LineUnavailableException ex) {
+            ex.printStackTrace();
+        }
+    }
+
     private void enviarFrame(ImageIcon frame) {
         MensajeVideo mensajeVideo = new MensajeVideo(frame);
         enviador.enviarVideo(mensajeVideo);
+    }
+
+    private void enviarSampleAudio(byte[] bytes) {
+        MensajeAudio mensajeAudio = new MensajeAudio(bytes);
+        enviador.enviarAudio(mensajeAudio);
     }
 
     private class CapturadorVideo extends Thread {
@@ -93,6 +132,31 @@ public class VideollamadaGUI extends JFrame implements ImpresoraChat {
                 } catch (InterruptedException ex) {
                     ex.printStackTrace();
                 }
+            }
+        }
+    }
+
+    private class CapturadorAudio extends Thread {
+        @Override
+        public void run() {
+            try {
+                ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
+                int numBytesLeer;
+                int tamanoChunck = 1024;
+                byte[] bytes = new byte[microfono.getBufferSize() / 5];
+                byte[] buffer = new byte[1024];
+                while (true) {
+                    numBytesLeer = microfono.read(bytes, 0, tamanoChunck);
+                    //  bytesRead += numBytesRead;
+                    // write the mic data to a stream for use later
+                    byteOutput.write(bytes, 0, numBytesLeer);
+                    // write mic data to stream for immediate playback
+                    bocinas.write(bytes, 0, numBytesLeer);
+                    enviarSampleAudio(byteOutput.toByteArray());
+                    Thread.sleep(50);
+                }
+            } catch (InterruptedException ie) {
+                ie.printStackTrace();
             }
         }
     }
@@ -117,7 +181,8 @@ public class VideollamadaGUI extends JFrame implements ImpresoraChat {
             // Se imprime el frame recibido del otro cliente.
             lblImagenExterna.setIcon(((MensajeVideo) mensaje).getFrame());
         } else if(mensaje instanceof MensajeAudio) {
-            // Code
+            MensajeAudio mensajeAudio = ((MensajeAudio) mensaje);
+            bocinas.write(mensajeAudio.getBytes(), 0, mensajeAudio.getBytes().length);
         }
     }
 }
