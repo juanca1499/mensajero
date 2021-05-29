@@ -34,6 +34,7 @@ public class ClienteEnviaTCP {
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
             objectOutputStream.writeObject(mensaje);
             objectOutputStream.flush();
+            outputStream.flush();
             socket.close();
         }
         // utilizamos el catch para capturar los errores que puedan surgir

@@ -13,6 +13,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 public class VideollamadaGUI extends JFrame implements ImpresoraChat {
     private JPanel panelGeneral;
@@ -44,7 +45,7 @@ public class VideollamadaGUI extends JFrame implements ImpresoraChat {
         cargarComponentes();
         agregarEventos();
         iniciarVideo();
-        iniciarAudio();
+        //iniciarAudio();
     }
 
     private void cargarComponentes() {
@@ -152,10 +153,13 @@ public class VideollamadaGUI extends JFrame implements ImpresoraChat {
                     // write mic data to stream for immediate playback
                     bocinas.write(bytes, 0, numBytesLeer);
                     enviarSampleAudio(byteOutput.toByteArray());
+                    byteOutput.flush();
                     Thread.sleep(50);
                 }
             } catch (InterruptedException ie) {
                 ie.printStackTrace();
+            } catch (IOException eio) {
+                eio.printStackTrace();
             }
         }
     }
