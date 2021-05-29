@@ -111,7 +111,13 @@ public class MensajeroClienteGUI extends MensajeroGUI {
             txtAreaMensajesExternos.append("\n<<" + mensaje.getFecha().toString() + ">>");
             txtAreaMensajesExternos.append("\nSe recibió un archivo: \n" + msjArchivo);
         } else if(mensaje instanceof MensajeVideo) {
-            videollamadaGUI.imprimirMensaje(mensaje);
+            if(videollamadaGUI == null) {
+                videollamadaGUI = new VideollamadaGUI(usuario, enviador);
+                videollamadaGUI.setVisible(true);
+                videollamadaGUI.imprimirMensaje(mensaje);
+            } else {
+                videollamadaGUI.imprimirMensaje(mensaje);
+            }
         } else if(mensaje instanceof MensajeAudio) {
             videollamadaGUI.imprimirMensaje(mensaje);
         }
