@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 
 public class MensajeArchivo extends Mensaje implements Serializable {
 
+    private static final long serialVersionUID = 4L;
     private File archivo;
     private byte[] bytes;
 

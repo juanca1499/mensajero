@@ -5,6 +5,7 @@ import java.util.Date;
 
 public abstract class Mensaje implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     protected Date fecha;
     protected String origen;
     protected String destino;
