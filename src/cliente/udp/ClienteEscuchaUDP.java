@@ -2,6 +2,7 @@ package cliente.udp;
 
 import cliente.interfaces.ReceptorMensaje;
 import cliente.mensajes.Mensaje;
+import cliente.mensajes.MensajeAudio;
 import cliente.mensajes.MensajeTexto;
 import cliente.mensajes.MensajeVideo;
 
@@ -52,6 +53,8 @@ public class ClienteEscuchaUDP extends Thread {
             receptorMensaje.recibirMensaje((MensajeTexto) mensaje);
         } else if(mensaje instanceof MensajeVideo) {
             receptorMensaje.recibirVideo((MensajeVideo) mensaje);
+        } else if(mensaje instanceof MensajeAudio) {
+            receptorMensaje.recibirAudio((MensajeAudio) mensaje);
         }
     }
 }

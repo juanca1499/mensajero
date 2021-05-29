@@ -103,18 +103,19 @@ public class Servidor implements EnviadorMensaje, ReceptorMensaje {
     }
 
     @Override
-    public void enviarAudio(MensajeAudio sample) {
+    public void recibirVideo(MensajeVideo frame) {
+        enviarVideo(frame);
+    }
 
+    @Override
+    public void enviarAudio(MensajeAudio sample) {
+        ConexionCliente conexionCliente = buscarCliente(sample.getDestino());
+        enviarMensajeUDP(conexionCliente,sample);
     }
 
     @Override
     public void recibirAudio(MensajeAudio sample) {
-
-    }
-
-    @Override
-    public void recibirVideo(MensajeVideo frame) {
-        enviarVideo(frame);
+        enviarAudio(sample);
     }
 
     public void agregarCliente(ConexionCliente cliente) {
