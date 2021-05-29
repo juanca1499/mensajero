@@ -1,7 +1,9 @@
 package cliente.tcp;
 
 import cliente.interfaces.ReceptorMensaje;
+import cliente.mensajes.Mensaje;
 import cliente.mensajes.MensajeArchivo;
+import cliente.mensajes.MensajeVideo;
 import conexion.ConexionCliente;
 
 import java.net.*;
@@ -37,8 +39,9 @@ public class ClienteEscuchaTCP extends Thread {
                 // Declaramos e instanciamos el objeto DataInputStream
                 // que nos valdrá para recibir datos del cliente
                 objIn = new ObjectInputStream(socketServidor.getInputStream());
-                MensajeArchivo mensajeArchivo = (MensajeArchivo) objIn.readObject();
-                receptorMensaje.recibirArchivo(mensajeArchivo);
+                Mensaje mensaje = (Mensaje) objIn.readObject();
+                reedireccionarMensaje(mensaje);
+                objIn.close();
             }
         }
         // utilizamos el catch para capturar los errores que puedan surgir
@@ -48,6 +51,14 @@ public class ClienteEscuchaTCP extends Thread {
             // programa
             System.err.println(e.getMessage());
             System.exit(1);
+        }
+    }
+
+    private void reedireccionarMensaje(Mensaje mensaje) {
+        if(mensaje instanceof MensajeArchivo) {
+            receptorMensaje.recibirArchivo((MensajeArchivo) mensaje);
+        } else if(mensaje instanceof MensajeVideo) {
+            receptorMensaje.recibirVideo((MensajeVideo) mensaje);
         }
     }
 }
