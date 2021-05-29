@@ -115,7 +115,7 @@ public class VideollamadaGUI extends JFrame implements ImpresoraChat {
     public void imprimirMensaje(Mensaje mensaje) {
         if(mensaje instanceof MensajeVideo) {
             // Se imprime el frame recibido del otro cliente.
-            lblImagenLocal.setIcon(((MensajeVideo) mensaje).getFrame());
+            lblImagenExterna.setIcon(((MensajeVideo) mensaje).getFrame());
         } else if(mensaje instanceof MensajeAudio) {
             // Code
         }
