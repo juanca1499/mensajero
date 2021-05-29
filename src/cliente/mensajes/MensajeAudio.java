@@ -1,6 +1,8 @@
 package cliente.mensajes;
 
-public class MensajeAudio extends Mensaje {
+import java.io.Serializable;
+
+public class MensajeAudio extends Mensaje implements Serializable {
 
     private byte[] bytes;
 

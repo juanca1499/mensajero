@@ -29,7 +29,7 @@ public class ServidorEnviaUDP {
     public void enviar(Mensaje mensaje) {
         byte[] mensaje_bytes;
         try {
-            System.out.println("ENVIANDO MENSAJE DESDE SERVIDOR A LA DIRECCION:  " + IP_DESTINO + ":" + PUERTO_DESTINO);
+            System.out.println("ENVIANDO MENSAJE UDP DESDE SERVIDOR A LA DIRECCION:  " + IP_DESTINO + ":" + PUERTO_DESTINO);
             address=InetAddress.getByName(IP_DESTINO);
             ByteArrayOutputStream byteArray = new ByteArrayOutputStream();
             ObjectOutputStream objectStream = new ObjectOutputStream(byteArray);

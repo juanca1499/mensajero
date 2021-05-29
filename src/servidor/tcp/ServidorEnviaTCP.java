@@ -30,7 +30,7 @@ public class ServidorEnviaTCP {
     public void enviar(Mensaje mensaje) {
         // Declaramos un bloque try y catch para controlar la ejecución del subprograma
         try {
-            System.out.println("ENVIANDO MENSAJE DESDE SERVIDOR A LA DIRECCION:  " + IP_CLIENTE + ":" + PUERTO_CLIENTE);
+            System.out.println("ENVIANDO MENSAJE TCP DESDE SERVIDOR A LA DIRECCION:  " + IP_CLIENTE + ":" + PUERTO_CLIENTE);
             objOut = new ObjectOutputStream(socket.getOutputStream());
             objOut.writeObject(mensaje);
             objOut.flush();
