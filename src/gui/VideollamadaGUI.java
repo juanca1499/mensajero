@@ -151,8 +151,8 @@ public class VideollamadaGUI extends JFrame implements ImpresoraChat {
                 byteOutput.write(bytes, 0, numBytesLeer);
                 // write mic data to stream for immediate playback
 //                bocinas.write(bytes, 0, numBytesLeer);
-                //enviarSampleAudio(byteOutput.toByteArray());
-                System.out.println("SIZE DEL Array: " + byteOutput.size());
+                enviarSampleAudio(byteOutput.toByteArray());
+                //System.out.println("SIZE DEL Array: " + byteOutput.size());
             }
         }
     }
@@ -177,6 +177,7 @@ public class VideollamadaGUI extends JFrame implements ImpresoraChat {
             // Se imprime el frame recibido del otro cliente.
             lblImagenExterna.setIcon(((MensajeVideo) mensaje).getFrame());
         } else if(mensaje instanceof MensajeAudio) {
+            System.out.println("RECIBIENDO INFORMACIÓN");
             MensajeAudio mensajeAudio = ((MensajeAudio) mensaje);
             bocinas.write(mensajeAudio.getBytes(), 0, mensajeAudio.getBytes().length);
         }

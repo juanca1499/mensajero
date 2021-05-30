@@ -15,7 +15,7 @@ public class ClienteEnviaTCP {
     protected final int PUERTO_SERVER;
     protected final String IP_SERVIDOR;
     
-    public ClienteEnviaTCP(ConexionServidor conexionServidor) throws Exception{
+    public ClienteEnviaTCP(ConexionServidor conexionServidor) {
         PUERTO_SERVER = conexionServidor.getPuertoTCP();
         IP_SERVIDOR = conexionServidor.getIp();
     }
