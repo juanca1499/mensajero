@@ -11,7 +11,7 @@ import java.io.*;
 
 public class ServidorEscuchaUDP extends Thread {
     protected DatagramSocket socket;
-    protected final int MAX_BUFFER=256;
+    protected final int MAX_BUFFER=10000;
     protected DatagramPacket paquete;
     protected byte[] mensaje_bytes;
     private ReceptorMensaje receptorMensaje;
@@ -30,12 +30,13 @@ public class ServidorEscuchaUDP extends Thread {
                 mensaje_bytes=new byte[MAX_BUFFER];
                 paquete = new DatagramPacket(mensaje_bytes,MAX_BUFFER);
                 socket.receive(paquete);
+                System.out.println("Se recibió un datagrama del lado del servidor");
                 ByteArrayInputStream byteStream = new ByteArrayInputStream(mensaje_bytes);
                 ObjectInputStream objectStream = new ObjectInputStream(
                         new BufferedInputStream(byteStream));
-                Mensaje mensaje = (Mensaje) objectStream.readObject();
-                reedireccionarMensaje(mensaje);
-                objectStream.close();
+                    Mensaje mensaje = (Mensaje) objectStream.readObject();
+                    reedireccionarMensaje(mensaje);
+                    objectStream.close();
             }
         }
         catch (Exception e) {

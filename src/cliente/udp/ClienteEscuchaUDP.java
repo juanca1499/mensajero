@@ -13,7 +13,7 @@ import java.nio.file.Paths;
 //declaramos la clase udp escucha
 public class ClienteEscuchaUDP extends Thread {
     //Definimos el sockets, número de bytes del buffer, y mensaje.
-    protected final int MAX_BUFFER=256;
+    protected final int MAX_BUFFER=10000;
     protected DatagramSocket socket;
     protected DatagramPacket servPaquete;
     private final ReceptorMensaje receptorMensaje;

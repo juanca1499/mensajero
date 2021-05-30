@@ -145,14 +145,14 @@ public class VideollamadaGUI extends JFrame implements ImpresoraChat {
             try {
                 byte[] bytes = new byte[microfono.getBufferSize() / 5];
                 while (true) {
+                    byteOutput.reset();
                     numBytesLeer = microfono.read(bytes, 0, tamanoChunck);
                     //  bytesRead += numBytesRead;
                     // write the mic data to a stream for use later
                     byteOutput.write(bytes, 0, numBytesLeer);
                     // write mic data to stream for immediate playback
-//                  bocinas.write(bytes, 0, numBytesLeer);
+                    //bocinas.write(bytes, 0, numBytesLeer);
                     enviarSampleAudio(byteOutput.toByteArray());
-                    byteOutput.reset();
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();
