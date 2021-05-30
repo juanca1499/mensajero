@@ -1,7 +1,9 @@
 package cliente.tcp;
 import cliente.mensajes.Mensaje;
 import cliente.mensajes.MensajeArchivo;
+import cliente.mensajes.MensajeVideo;
 import conexion.ConexionServidor;
+import utilidades.Convertidor;
 
 import java.net.*;
 // importar la libreria java.net
@@ -23,8 +25,6 @@ public class ClienteEnviaTCP {
     public void enviar(Mensaje mensaje) {
         // Declaramos un bloque try y catch para controlar la ejecución del subprograma
         try {
-            // Instanciamos un socket con la dirección del destino y el
-            // puerto que vamos a utilizar para la comunicación.
             socket = new Socket(IP_SERVIDOR,PUERTO_SERVER);
             System.out.println("\n\nENVIANDO MENSAJE DESDE CLIENTE " + mensaje.getOrigen() +
             " CON DESTINO AL USUARIO " + mensaje.getDestino());
