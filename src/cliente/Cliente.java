@@ -131,7 +131,7 @@ public class Cliente implements EnviadorMensaje, ReceptorMensaje {
         } else {
             sample.setDestino("Juca");
         }
-        clienteEnviaUDP.enviar(sample);
+        clienteEnviaTCP.enviar(sample);
     }
 
     @Override

@@ -119,7 +119,13 @@ public class MensajeroClienteGUI extends MensajeroGUI {
                 videollamadaGUI.imprimirMensaje(mensaje);
             }
         } else if(mensaje instanceof MensajeAudio) {
-            videollamadaGUI.imprimirMensaje(mensaje);
+            if(videollamadaGUI == null) {
+                videollamadaGUI = new VideollamadaGUI(usuario, enviador);
+                videollamadaGUI.setVisible(true);
+                videollamadaGUI.imprimirMensaje(mensaje);
+            } else {
+                videollamadaGUI.imprimirMensaje(mensaje);
+            }
         }
     }
 }

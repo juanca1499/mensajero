@@ -44,7 +44,7 @@ public class VideollamadaGUI extends JFrame implements ImpresoraChat {
         cargarComponentes();
         agregarEventos();
         iniciarAudio();
-        iniciarVideo();
+        //iniciarVideo();
     }
 
     private void cargarComponentes() {
@@ -150,10 +150,9 @@ public class VideollamadaGUI extends JFrame implements ImpresoraChat {
                 // write the mic data to a stream for use later
                 byteOutput.write(bytes, 0, numBytesLeer);
                 // write mic data to stream for immediate playback
-                bocinas.write(bytes, 0, numBytesLeer);
-                enviarSampleAudio(byteOutput.toByteArray());
+//                bocinas.write(bytes, 0, numBytesLeer);
+                //enviarSampleAudio(byteOutput.toByteArray());
                 System.out.println("SIZE DEL Array: " + byteOutput.size());
-                byteOutput.reset();
             }
         }
     }
@@ -179,7 +178,7 @@ public class VideollamadaGUI extends JFrame implements ImpresoraChat {
             lblImagenExterna.setIcon(((MensajeVideo) mensaje).getFrame());
         } else if(mensaje instanceof MensajeAudio) {
             MensajeAudio mensajeAudio = ((MensajeAudio) mensaje);
-            //bocinas.write(mensajeAudio.getBytes(), 0, mensajeAudio.getBytes().length);
+            bocinas.write(mensajeAudio.getBytes(), 0, mensajeAudio.getBytes().length);
         }
     }
 }

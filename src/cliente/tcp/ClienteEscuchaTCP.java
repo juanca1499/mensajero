@@ -3,6 +3,7 @@ package cliente.tcp;
 import cliente.interfaces.ReceptorMensaje;
 import cliente.mensajes.Mensaje;
 import cliente.mensajes.MensajeArchivo;
+import cliente.mensajes.MensajeAudio;
 import cliente.mensajes.MensajeVideo;
 import conexion.ConexionCliente;
 
@@ -59,6 +60,8 @@ public class ClienteEscuchaTCP extends Thread {
             receptorMensaje.recibirArchivo((MensajeArchivo) mensaje);
         } else if(mensaje instanceof MensajeVideo) {
             receptorMensaje.recibirVideo((MensajeVideo) mensaje);
+        } else if(mensaje instanceof MensajeAudio) {
+            receptorMensaje.recibirAudio((MensajeAudio) mensaje);
         }
     }
 }
