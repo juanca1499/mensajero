@@ -39,7 +39,7 @@ public class ServidorEnviaUDP {
             socket.send(paquete);
         }
         catch (Exception e) {
-            System.err.println("Exception "+ e.getMessage());
+            e.printStackTrace();
             System.exit(1);
         }
     }

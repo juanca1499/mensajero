@@ -41,7 +41,7 @@ public class ClienteEnviaTCP {
         catch (Exception e) {
             // si existen errores los mostrará en la consola y después saldrá del
             // programa
-            System.err.println(e.getMessage());
+            e.printStackTrace();
             System.exit(1);
         }
     }

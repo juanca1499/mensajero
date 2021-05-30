@@ -43,7 +43,6 @@ public class ClienteEscuchaUDP extends Thread {
         }
         catch (Exception e) {
             e.printStackTrace();
-            System.err.println("Excepcion C: "+e.getMessage());
             System.exit(1);
         }
     }
