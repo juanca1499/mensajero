@@ -36,14 +36,15 @@ public class ClienteEscuchaTCP extends Thread {
                 // Creamos un socket_cli al que le pasamos el contenido del objeto socket después
                 // de ejecutar la función accept que nos permitirá aceptar conexiones de clientes
                 socketServidor = socket.accept();
-                long tiempoActual = System.currentTimeMillis();
-                System.out.println("Se esta recibiendo un archivo... " + tiempoActual);
+                System.out.println("Se esta recibiendo un archivo...");
+                long tiempoInicio = System.currentTimeMillis();
+                long tiempoActual;
                 // Declaramos e instanciamos el objeto DataInputStream
                 // que nos valdrá para recibir datos del cliente
                 objIn = new ObjectInputStream(socketServidor.getInputStream());
                 Mensaje mensaje = (Mensaje) objIn.readObject();
                 tiempoActual = System.currentTimeMillis();
-                System.out.println("Se terminó de recibir el archivo... " + tiempoActual);
+                System.out.println("Se terminó de recibir el archivo: " + (tiempoActual - tiempoInicio) / 1000);
                 reedireccionarMensaje(mensaje);
                 objIn.close();
             }

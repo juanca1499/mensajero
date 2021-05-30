@@ -39,9 +39,9 @@ public class ClienteEnviaTCP {
                 outputStream.flush();
                 socket.close();
             } else {
+                System.out.println("Enviando archivo...");
                 long tiempoInicio = System.currentTimeMillis();
                 long tiempoActual;
-                System.out.println("Enviando archivo...");
                 ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
                 objectOutputStream.writeObject(mensaje);
                 tiempoActual = System.currentTimeMillis();
