@@ -110,7 +110,7 @@ public class Servidor implements EnviadorMensaje, ReceptorMensaje {
     @Override
     public void enviarAudio(MensajeAudio sample) {
         ConexionCliente conexionCliente = buscarCliente(sample.getDestino());
-        enviarMensajeTCP(conexionCliente,sample);
+        enviarMensajeUDP(conexionCliente,sample);
     }
 
     @Override

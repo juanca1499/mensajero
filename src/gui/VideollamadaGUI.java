@@ -139,20 +139,23 @@ public class VideollamadaGUI extends JFrame implements ImpresoraChat {
     private class CapturadorAudio extends Thread {
         @Override
         public void run() {
-
             ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
             int numBytesLeer;
             int tamanoChunck = 1024;
-            byte[] bytes = new byte[microfono.getBufferSize() / 5];
-            while (true) {
-                numBytesLeer = microfono.read(bytes, 0, tamanoChunck);
-                //  bytesRead += numBytesRead;
-                // write the mic data to a stream for use later
-                byteOutput.write(bytes, 0, numBytesLeer);
-                // write mic data to stream for immediate playback
-//                bocinas.write(bytes, 0, numBytesLeer);
-                enviarSampleAudio(byteOutput.toByteArray());
-                //System.out.println("SIZE DEL Array: " + byteOutput.size());
+            try {
+                byte[] bytes = new byte[microfono.getBufferSize() / 5];
+                while (true) {
+                    numBytesLeer = microfono.read(bytes, 0, tamanoChunck);
+                    //  bytesRead += numBytesRead;
+                    // write the mic data to a stream for use later
+                    byteOutput.write(bytes, 0, numBytesLeer);
+                    // write mic data to stream for immediate playback
+//                  bocinas.write(bytes, 0, numBytesLeer);
+                    enviarSampleAudio(byteOutput.toByteArray());
+                    byteOutput.reset();
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
         }
     }
@@ -179,7 +182,7 @@ public class VideollamadaGUI extends JFrame implements ImpresoraChat {
         } else if(mensaje instanceof MensajeAudio) {
             System.out.println("RECIBIENDO INFORMACIÓN");
             MensajeAudio mensajeAudio = ((MensajeAudio) mensaje);
-            bocinas.write(mensajeAudio.getBytes(), 0, mensajeAudio.getBytes().length);
+            bocinas.write(mensajeAudio.getBytes(), 0, 1024);
         }
     }
 }

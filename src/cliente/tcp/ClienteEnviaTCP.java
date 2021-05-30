@@ -28,6 +28,7 @@ public class ClienteEnviaTCP {
             socket = new Socket(IP_SERVIDOR,PUERTO_SERVER);
             System.out.println("\n\nENVIANDO MENSAJE DESDE CLIENTE " + mensaje.getOrigen() +
             " CON DESTINO AL USUARIO " + mensaje.getDestino());
+            System.out.println("\n\nENVIANDO MENSAJE DESDE CLIENTE A LA DIRECCION " + IP_SERVIDOR + ":" + PUERTO_SERVER);
             // get the output stream from the socket.
             OutputStream outputStream = socket.getOutputStream();
             // create an object output stream from the output stream so we can send an object through it

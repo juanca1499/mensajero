@@ -34,6 +34,7 @@ public class ClienteEnviaUDP {
             ObjectOutputStream objectStream = new ObjectOutputStream(byteArray);
             objectStream.writeObject(mensaje);
             mensaje_bytes = byteArray.toByteArray();
+            System.out.println("TAMANO DEL MENSAJE A ENVIAR: " + mensaje_bytes.length);
             paquete = new DatagramPacket(mensaje_bytes,mensaje_bytes.length,address,PUERTO_SERVIDOR);
             socket.send(paquete);
         }
