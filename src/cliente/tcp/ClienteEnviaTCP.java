@@ -27,16 +27,29 @@ public class ClienteEnviaTCP {
         try {
             socket = new Socket(IP_SERVIDOR,PUERTO_SERVER);
             System.out.println("\n\nENVIANDO MENSAJE DESDE CLIENTE " + mensaje.getOrigen() +
-            " CON DESTINO AL USUARIO " + mensaje.getDestino());
+                    " CON DESTINO AL USUARIO " + mensaje.getDestino());
             System.out.println("\n\nENVIANDO MENSAJE DESDE CLIENTE A LA DIRECCION " + IP_SERVIDOR + ":" + PUERTO_SERVER);
             // get the output stream from the socket.
             OutputStream outputStream = socket.getOutputStream();
-            // create an object output stream from the output stream so we can send an object through it
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-            objectOutputStream.writeObject(mensaje);
-            objectOutputStream.flush();
-            outputStream.flush();
-            socket.close();
+            if(!(mensaje instanceof MensajeArchivo)) {
+                // create an object output stream from the output stream so we can send an object through it
+                ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+                objectOutputStream.writeObject(mensaje);
+                objectOutputStream.flush();
+                outputStream.flush();
+                socket.close();
+            } else {
+                long tiempoInicio = System.currentTimeMillis();
+                long tiempoActual;
+                System.out.println("Enviando archivo...");
+                ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+                objectOutputStream.writeObject(mensaje);
+                tiempoActual = System.currentTimeMillis();
+                System.out.println("Tiempo transcurrido (segs): " + (tiempoActual - tiempoInicio) / 1000);
+                objectOutputStream.flush();
+                outputStream.flush();
+                socket.close();
+            }
         }
         // utilizamos el catch para capturar los errores que puedan surgir
         catch (Exception e) {

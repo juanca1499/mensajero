@@ -1,14 +1,11 @@
 package cliente;
 
-import cliente.mensajes.MensajeAudio;
-import cliente.mensajes.MensajeVideo;
+import cliente.mensajes.*;
 import cliente.tcp.ClienteEscuchaTCP;
 import gui.MensajeroClienteGUI;
 import cliente.interfaces.EnviadorMensaje;
 import cliente.interfaces.ImpresoraChat;
 import cliente.interfaces.ReceptorMensaje;
-import cliente.mensajes.MensajeArchivo;
-import cliente.mensajes.MensajeTexto;
 import cliente.tcp.ClienteEnviaTCP;
 import cliente.udp.ClienteEnviaUDP;
 import cliente.udp.ClienteEscuchaUDP;
@@ -80,6 +77,13 @@ public class Cliente implements EnviadorMensaje, ReceptorMensaje {
             byte[] bytesArchivo = new byte[fileInput.available()];
             fileInput.read(bytesArchivo);
             archivo.setBytes(bytesArchivo);
+            // Se crea un mensaje con metadatos como la cantidad de bytes que contendrá
+            // el archivo a recibir para calcular la tasa de transferencia.
+            // Este mensaje se enviará antes que el archivo.
+            MensajeMetaDatos metaDatos = new MensajeMetaDatos(archivo.getOrigen(),
+            archivo.getDestino(),bytesArchivo.length);
+            clienteEnviaTCP.enviar(metaDatos);
+            // Ahora sí, se envía el archivo.
             clienteEnviaTCP.enviar(archivo);
         } catch (Exception ex) {
             ex.printStackTrace();
