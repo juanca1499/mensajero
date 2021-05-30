@@ -44,7 +44,7 @@ public class VideollamadaGUI extends JFrame implements ImpresoraChat {
         cargarComponentes();
         agregarEventos();
         iniciarAudio();
-        //iniciarVideo();
+        iniciarVideo();
     }
 
     private void cargarComponentes() {
@@ -71,11 +71,14 @@ public class VideollamadaGUI extends JFrame implements ImpresoraChat {
     }
 
     private void iniciarVideo() {
-        webcam = Webcam.getDefault();
-        webcam.setViewSize(new Dimension(320,240));
-        webcam.open();
-        capturadorVideo = new CapturadorVideo();
-        capturadorVideo.start();
+        if(webcam == null)
+        {
+            webcam = Webcam.getDefault();
+            webcam.setViewSize(new Dimension(320,240));
+            webcam.open();
+            capturadorVideo = new CapturadorVideo();
+            capturadorVideo.start();
+        }
     }
 
     private void detenerVideo() {
@@ -85,25 +88,26 @@ public class VideollamadaGUI extends JFrame implements ImpresoraChat {
 
     private void iniciarAudio() {
         try {
-            // Se especifica el formato del audio a ser enviado.
-            formatoAudio = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 44100,
-                    16, 2, 4, 44100, true);
-            // Se abre el microfono del dispositivo
-            microfono = AudioSystem.getTargetDataLine(formatoAudio);
+            if(formatoAudio == null) {
+                // Se especifica el formato del audio a ser enviado.
+                formatoAudio = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED, 44100,
+                        16, 2, 4, 44100, true);
+                // Se abre el microfono del dispositivo
+                microfono = AudioSystem.getTargetDataLine(formatoAudio);
 
-            DataLine.Info info = new DataLine.Info(TargetDataLine.class, formatoAudio);
-            microfono = (TargetDataLine) AudioSystem.getLine(info);
-            microfono.open(formatoAudio);
-            microfono.start();
+                DataLine.Info info = new DataLine.Info(TargetDataLine.class, formatoAudio);
+                microfono = (TargetDataLine) AudioSystem.getLine(info);
+                microfono.open(formatoAudio);
+                microfono.start();
 
-            // Se abren las bocinas del dispositivo
-            DataLine.Info dataLineInfo = new DataLine.Info(SourceDataLine.class, formatoAudio);
-            bocinas = (SourceDataLine) AudioSystem.getLine(dataLineInfo);
-            bocinas.open(formatoAudio);
-            bocinas.start();
-            capturadorAudio = new CapturadorAudio();
-            capturadorAudio.start();
-
+                // Se abren las bocinas del dispositivo
+                DataLine.Info dataLineInfo = new DataLine.Info(SourceDataLine.class, formatoAudio);
+                bocinas = (SourceDataLine) AudioSystem.getLine(dataLineInfo);
+                bocinas.open(formatoAudio);
+                bocinas.start();
+                capturadorAudio = new CapturadorAudio();
+                capturadorAudio.start();
+            }
         } catch (LineUnavailableException ex) {
             ex.printStackTrace();
         }
