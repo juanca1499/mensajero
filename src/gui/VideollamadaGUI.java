@@ -28,6 +28,7 @@ public class VideollamadaGUI extends JFrame implements ImpresoraChat {
     private AudioFormat formatoAudio;
     private TargetDataLine microfono;
     private SourceDataLine bocinas;
+    private boolean llamadaActivada;
 
     private EnviadorMensaje enviador;
     private String usuario;
@@ -36,6 +37,7 @@ public class VideollamadaGUI extends JFrame implements ImpresoraChat {
         super("Mensajero Fenix");
         this.usuario = usuario;
         this.enviador = enviador;
+        llamadaActivada = false;
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(600,600);
         setLayout(new BorderLayout());
@@ -169,23 +171,27 @@ public class VideollamadaGUI extends JFrame implements ImpresoraChat {
                 iniciarVideo();
                 panelOpciones.remove(btnIniciarVllamada);
                 panelOpciones.add(btnColgarVllamada);
+                llamadaActivada = true;
             } else if(origen == btnColgarVllamada) {
                 detenerVideo();
                 detenerAudio();
                 dispose();
+                llamadaActivada = false;
             }
         }
     }
 
     @Override
     public void imprimirMensaje(Mensaje mensaje) {
-        if(mensaje instanceof MensajeVideo) {
-            // Se imprime el frame recibido del otro cliente.
-            lblImagenExterna.setIcon(((MensajeVideo) mensaje).getFrame());
-        } else if(mensaje instanceof MensajeAudio) {
-            System.out.println("RECIBIENDO INFORMACIÓN");
-            MensajeAudio mensajeAudio = ((MensajeAudio) mensaje);
-            bocinas.write(mensajeAudio.getBytes(), 0, 1024);
+        if(llamadaActivada) {
+            if(mensaje instanceof MensajeVideo) {
+                // Se imprime el frame recibido del otro cliente.
+                lblImagenExterna.setIcon(((MensajeVideo) mensaje).getFrame());
+            } else if(mensaje instanceof MensajeAudio) {
+                System.out.println("RECIBIENDO INFORMACIÓN");
+                MensajeAudio mensajeAudio = ((MensajeAudio) mensaje);
+                bocinas.write(mensajeAudio.getBytes(), 0, 1024);
+            }
         }
     }
 }
