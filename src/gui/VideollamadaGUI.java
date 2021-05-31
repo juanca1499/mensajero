@@ -6,6 +6,7 @@ import cliente.mensajes.Mensaje;
 import cliente.mensajes.MensajeAudio;
 import cliente.mensajes.MensajeVideo;
 import com.github.sarxos.webcam.Webcam;
+import utilidades.Progreso;
 
 import javax.sound.sampled.*;
 import javax.swing.*;
@@ -193,5 +194,10 @@ public class VideollamadaGUI extends JFrame implements ImpresoraChat {
                 bocinas.write(mensajeAudio.getBytes(), 0, 1024);
             }
         }
+    }
+
+    @Override
+    public void imprimirProgreso(Progreso progreso) {
+        // Code
     }
 }

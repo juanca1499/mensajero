@@ -40,7 +40,7 @@ public abstract class MensajeroGUI extends JFrame implements ImpresoraChat {
     public MensajeroGUI() {
         super("Mensajero Fenix");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(600,600);
+        setSize(700,700);
         setLayout(new BorderLayout());
         setResizable(false);
         setLocationRelativeTo(null);

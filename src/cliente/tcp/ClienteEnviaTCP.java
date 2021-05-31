@@ -1,9 +1,9 @@
 package cliente.tcp;
 import cliente.mensajes.Mensaje;
 import cliente.mensajes.MensajeArchivo;
-import cliente.mensajes.MensajeVideo;
+import cliente.mensajes.MensajeLatencia;
 import conexion.ConexionServidor;
-import utilidades.Convertidor;
+import utilidades.Serializador;
 
 import java.net.*;
 // importar la libreria java.net
@@ -16,6 +16,7 @@ public class ClienteEnviaTCP {
     protected Socket socket;
     protected final int PUERTO_SERVER;
     protected final String IP_SERVIDOR;
+    private OutputStream outputStream;
     
     public ClienteEnviaTCP(ConexionServidor conexionServidor) {
         PUERTO_SERVER = conexionServidor.getPuertoTCP();
@@ -30,7 +31,7 @@ public class ClienteEnviaTCP {
                     " CON DESTINO AL USUARIO " + mensaje.getDestino());
             System.out.println("\n\nENVIANDO MENSAJE DESDE CLIENTE A LA DIRECCION " + IP_SERVIDOR + ":" + PUERTO_SERVER);
             // get the output stream from the socket.
-            OutputStream outputStream = socket.getOutputStream();
+            outputStream = socket.getOutputStream();
             if(!(mensaje instanceof MensajeArchivo)) {
                 // create an object output stream from the output stream so we can send an object through it
                 ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);

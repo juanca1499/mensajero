@@ -1,10 +1,7 @@
 package cliente.tcp;
 
 import cliente.interfaces.ReceptorMensaje;
-import cliente.mensajes.Mensaje;
-import cliente.mensajes.MensajeArchivo;
-import cliente.mensajes.MensajeAudio;
-import cliente.mensajes.MensajeVideo;
+import cliente.mensajes.*;
 import conexion.ConexionCliente;
 
 import java.net.*;
@@ -12,7 +9,6 @@ import java.net.*;
 import java.io.*;
 
 public class ClienteEscuchaTCP extends Thread {
-    // declaramos un objeto ServerSocket para realizar la comunicación
     protected ServerSocket socket;
     protected Socket socketServidor;
     private ObjectInputStream objIn;
@@ -67,5 +63,11 @@ public class ClienteEscuchaTCP extends Thread {
         } else if(mensaje instanceof MensajeAudio) {
             receptorMensaje.recibirAudio((MensajeAudio) mensaje);
         }
+    }
+
+    private void imprimirLatenciaEstimada(int cantBytes, MensajeLatencia mensajeBitRate) {
+        long latenciaBit = mensajeBitRate.getLatencia();
+        long latenciaArchivo = (cantBytes * 8L) / latenciaBit;
+        System.out.println("EL TIEMPO ESTIMADO DE ENVÍO ES: " + latenciaArchivo);
     }
 }

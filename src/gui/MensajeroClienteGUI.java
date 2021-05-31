@@ -2,6 +2,7 @@ package gui;
 
 import cliente.interfaces.EnviadorMensaje;
 import cliente.mensajes.*;
+import utilidades.Progreso;
 import utilidades.RutaUtilidades;
 
 import javax.swing.*;
@@ -19,6 +20,11 @@ public class MensajeroClienteGUI extends MensajeroGUI {
 
     private String usuario;
 
+    private String statusTransferencia;
+    private String statusLatencia;
+    private String statusTiempoRestante;
+    private String statustiempoTranscurrido;
+
     private EnviadorMensaje enviador;
 
     public MensajeroClienteGUI(String usuario, EnviadorMensaje enviador)  {
@@ -26,6 +32,10 @@ public class MensajeroClienteGUI extends MensajeroGUI {
         this.enviador = enviador;
         this.cargarComponentes();
         this.agregarEventos();
+        statusTransferencia = "bps";
+        statusLatencia = "Tiempo total: ";
+        statusTiempoRestante = "Tiempo restante: ";
+        statustiempoTranscurrido = "Tiempo transcurrido: ";
     }
 
     protected void cargarComponentes() {
@@ -84,7 +94,6 @@ public class MensajeroClienteGUI extends MensajeroGUI {
                 txtAreaMensajesPropios.append("\n\n<<" + mensajeArchivo.getFecha().toString() + ">>");
                 txtAreaMensajesPropios.append("\nARCHIVO ENVIADO:");
                 txtAreaMensajesPropios.append("\n" + mensajeArchivo);
-                lblStatus.setText("Listo");
             }
         }
     }
@@ -120,9 +129,19 @@ public class MensajeroClienteGUI extends MensajeroGUI {
                 videollamadaGUI.imprimirMensaje(mensaje);
             }
         } else if(mensaje instanceof MensajeAudio) {
-            if(videollamadaGUI != null) {
+            if (videollamadaGUI != null) {
                 videollamadaGUI.imprimirMensaje(mensaje);
             }
         }
+    }
+
+    @Override
+    public void imprimirProgreso(Progreso progreso) {
+        statusTransferencia = progreso.getBitRate() + " bps";
+        statusLatencia = "Tiempo total: " + progreso.getLatencia();
+        statusTiempoRestante = "Tiempo restante: " + progreso.getTiempoRestante();
+        statustiempoTranscurrido = "Tiempo transcurrido: " + progreso.getTiempoTranscurrido();
+        lblStatus.setText(statusLatencia + " " + statustiempoTranscurrido + " " +
+                statusTiempoRestante + " " + statusTransferencia);
     }
 }

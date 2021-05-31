@@ -118,6 +118,12 @@ public class Servidor implements EnviadorMensaje, ReceptorMensaje {
         enviarAudio(sample);
     }
 
+    @Override
+    public void recibirLatencia(MensajeLatencia latencia) {
+        ConexionCliente conexionCliente = buscarCliente(latencia.getDestino());
+        enviarMensajeTCP(conexionCliente,latencia);
+    }
+
     public void agregarCliente(ConexionCliente cliente) {
         listaClientes.add(cliente);
     }

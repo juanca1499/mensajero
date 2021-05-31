@@ -12,6 +12,8 @@ import cliente.udp.ClienteEscuchaUDP;
 import conexion.ConexionCliente;
 import conexion.ConexionServidor;
 import utilidades.Alerta;
+import utilidades.Progreso;
+import utilidades.Serializador;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,7 +24,6 @@ import java.net.DatagramSocket;
 public class Cliente implements EnviadorMensaje, ReceptorMensaje {
 
     private String nombreUsuario;
-    public final String ubicacionDescargas = System.getProperty("user.home") + "\\DescargasMSJFenix" + "\\";
     private ImpresoraChat impresora;
     private ConexionServidor conexionServidor;
     private ConexionCliente conexionCliente;
@@ -32,6 +33,9 @@ public class Cliente implements EnviadorMensaje, ReceptorMensaje {
     private ClienteEscuchaTCP clienteEscuchaTCP;
     private MensajeroClienteGUI clienteGUI;
     private DatagramSocket socketUDP;
+
+    private Progreso progresoTransferencia;
+    private ContadorTiempo contadorTiempo;
 
     public Cliente(ConexionCliente conexionCliente) throws Exception {
         this.conexionCliente = conexionCliente;
@@ -73,17 +77,15 @@ public class Cliente implements EnviadorMensaje, ReceptorMensaje {
             archivo.setDestino("Juca");
         }
         try {
+            // Se cálcula la latencia hacia el cliente para estimar el tiempo de envío
+            calcularLatencia(archivo.getOrigen(),archivo.getDestino());
             FileInputStream fileInput = new FileInputStream(archivo.getArchivo());
             byte[] bytesArchivo = new byte[fileInput.available()];
             fileInput.read(bytesArchivo);
             archivo.setBytes(bytesArchivo);
-            // Se crea un mensaje con metadatos como la cantidad de bytes que contendrá
-            // el archivo a recibir para calcular la tasa de transferencia.
-            // Este mensaje se enviará antes que el archivo.
-            MensajeMetaDatos metaDatos = new MensajeMetaDatos(archivo.getOrigen(),
-            archivo.getDestino(),bytesArchivo.length);
-            clienteEnviaTCP.enviar(metaDatos);
-            // Ahora sí, se envía el archivo.
+            progresoTransferencia = new Progreso();
+            contadorTiempo = new ContadorTiempo();
+            contadorTiempo.start();
             clienteEnviaTCP.enviar(archivo);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -104,6 +106,7 @@ public class Cliente implements EnviadorMensaje, ReceptorMensaje {
             try {
                 FileOutputStream fileOutput = new FileOutputStream(archivoDestino);
                 fileOutput.write(archivo.getBytes());
+                fileOutput.flush();
                 fileOutput.close();
             } catch(Exception ex) {
                 ex.printStackTrace();
@@ -159,5 +162,41 @@ public class Cliente implements EnviadorMensaje, ReceptorMensaje {
     public void setConexionCliente(ConexionCliente conexionCliente) throws Exception {
         this.conexionCliente = conexionCliente;
         inicializarServicios();
+    }
+
+    public void calcularLatencia(String origen, String destino) {
+        MensajeLatencia mensajeLatencia = new MensajeLatencia(origen,destino);
+        mensajeLatencia.setTiempoInicial(System.currentTimeMillis());
+        long cantBytes = Serializador.serializar(mensajeLatencia).length;
+        mensajeLatencia.setCantBytes(cantBytes);
+        clienteEnviaTCP.enviar(mensajeLatencia);
+    }
+
+    @Override
+    public void recibirLatencia(MensajeLatencia latencia) {
+        progresoTransferencia.setLatencia(latencia.getLatencia());
+    }
+
+    private class ContadorTiempo extends Thread {
+        private long tiempoInicio;
+        private long tiempoActual;
+
+        public ContadorTiempo() {
+            tiempoInicio = System.currentTimeMillis();
+        }
+        @Override
+        public void run() {
+            while (true) {
+                try {
+                    tiempoActual = System.currentTimeMillis();
+                    tiempoActual = (tiempoActual - tiempoInicio) / 1000;
+                    progresoTransferencia.setTiempoTranscurrido(tiempoActual);
+                    impresora.imprimirProgreso(progresoTransferencia);
+                    Thread.sleep(1000);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
     }
 }

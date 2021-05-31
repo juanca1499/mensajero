@@ -4,6 +4,7 @@ import cliente.interfaces.EnviadorMensaje;
 import cliente.mensajes.Mensaje;
 import cliente.mensajes.MensajeArchivo;
 import cliente.mensajes.MensajeTexto;
+import utilidades.Progreso;
 import utilidades.RutaUtilidades;
 
 import javax.swing.*;
@@ -85,5 +86,10 @@ public class MensajeroServidorGUI extends MensajeroGUI {
             txtAreaLogs.append("\nSE ENVIÓ UN ARCHIVO:");
             txtAreaLogs.append("\n"+ msjArchivo);
         }
+    }
+
+    @Override
+    public void imprimirProgreso(Progreso progreso) {
+
     }
 }
