@@ -7,11 +7,13 @@ public class MensajeLatencia extends Mensaje implements Serializable {
     private long tiempoInicial;
     private long tiempoFinal;
     private long cantBytes;
+    private boolean pong;
 
     public MensajeLatencia() { }
     public MensajeLatencia(String origen, String destino) {
         super(origen,destino);
         tiempoInicial = System.currentTimeMillis();
+        pong = false;
     }
 
     public long getTiempoInicial() {
@@ -40,5 +42,13 @@ public class MensajeLatencia extends Mensaje implements Serializable {
 
     public long getLatencia() {
         return (tiempoFinal - tiempoInicial) / 1000;
+    }
+
+    public boolean isPong() {
+        return pong;
+    }
+
+    public void setPong(boolean pong) {
+        this.pong = pong;
     }
 }

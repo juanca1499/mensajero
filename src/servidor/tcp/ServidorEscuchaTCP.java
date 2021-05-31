@@ -1,10 +1,7 @@
 package servidor.tcp;
 
 import cliente.interfaces.ReceptorMensaje;
-import cliente.mensajes.Mensaje;
-import cliente.mensajes.MensajeArchivo;
-import cliente.mensajes.MensajeAudio;
-import cliente.mensajes.MensajeVideo;
+import cliente.mensajes.*;
 import conexion.ConexionServidor;
 
 import java.net.*;
@@ -61,6 +58,8 @@ public class ServidorEscuchaTCP extends Thread {
             receptorMensaje.recibirVideo((MensajeVideo) mensaje);
         } else if(mensaje instanceof MensajeAudio) {
             receptorMensaje.recibirAudio((MensajeAudio) mensaje);
+        } else if(mensaje instanceof MensajeLatencia) {
+            receptorMensaje.recibirLatencia((MensajeLatencia) mensaje);
         }
     }
 }

@@ -62,6 +62,8 @@ public class ClienteEscuchaTCP extends Thread {
             receptorMensaje.recibirVideo((MensajeVideo) mensaje);
         } else if(mensaje instanceof MensajeAudio) {
             receptorMensaje.recibirAudio((MensajeAudio) mensaje);
+        } else if(mensaje instanceof MensajeLatencia) {
+            receptorMensaje.recibirLatencia((MensajeLatencia) mensaje);
         }
     }
 

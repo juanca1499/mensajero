@@ -77,13 +77,13 @@ public class Cliente implements EnviadorMensaje, ReceptorMensaje {
             archivo.setDestino("Juca");
         }
         try {
+            progresoTransferencia = new Progreso();
             // Se cálcula la latencia hacia el cliente para estimar el tiempo de envío
             calcularLatencia(archivo.getOrigen(),archivo.getDestino());
             FileInputStream fileInput = new FileInputStream(archivo.getArchivo());
             byte[] bytesArchivo = new byte[fileInput.available()];
             fileInput.read(bytesArchivo);
             archivo.setBytes(bytesArchivo);
-            progresoTransferencia = new Progreso();
             contadorTiempo = new ContadorTiempo();
             contadorTiempo.start();
             clienteEnviaTCP.enviar(archivo);
@@ -174,7 +174,22 @@ public class Cliente implements EnviadorMensaje, ReceptorMensaje {
 
     @Override
     public void recibirLatencia(MensajeLatencia latencia) {
-        progresoTransferencia.setLatencia(latencia.getLatencia());
+        if(latencia.isPong()) {
+            // El mensaje de latencia llegó de regresó al cliente que lo solicitó.
+            progresoTransferencia.setLatencia(latencia.getLatencia());
+            impresora.imprimirProgreso(progresoTransferencia);
+        } else {
+            // El mensaje de latencia llegó al detino que necesitaba alcanzar y ahora
+            // tiene que regresar al que lo solicitó.
+            System.out.println("Me llegó un mensaje para solicitar la latencia!!! :)");
+            latencia.setTiempoFinal(System.currentTimeMillis());
+            latencia.setPong(true);
+            String nuevoDestino = latencia.getOrigen();
+            String nuevoOrigen = latencia.getDestino();
+            latencia.setOrigen(nuevoOrigen);
+            latencia.setDestino(nuevoDestino);
+            clienteEnviaTCP.enviar(latencia);
+        }
     }
 
     private class ContadorTiempo extends Thread {
