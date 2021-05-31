@@ -89,6 +89,8 @@ public class Cliente implements EnviadorMensaje, ReceptorMensaje {
             calcularLatenciaArchivo(bytesArchivo.length);
             fileInput.read(bytesArchivo);
             archivo.setBytes(bytesArchivo);
+            System.out.println("TIEMPO INICIO ENVÍO: " + System.currentTimeMillis());
+            System.out.println("TAMANO DEL MENSAJE: " + bytesArchivo.length);
             new ClienteEnviaTCP(conexionServidor,archivo).start();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -107,6 +109,7 @@ public class Cliente implements EnviadorMensaje, ReceptorMensaje {
         if(archivoDestino != null) {
             impresora.imprimirMensaje(archivo);
             try {
+                System.out.println("TIEMPO FIN ENVIO: " + System.currentTimeMillis());
                 FileOutputStream fileOutput = new FileOutputStream(archivoDestino);
                 fileOutput.write(archivo.getBytes());
                 fileOutput.flush();
@@ -126,7 +129,7 @@ public class Cliente implements EnviadorMensaje, ReceptorMensaje {
             frame.setDestino("Juca");
         }
         clienteEnviaTCP = new ClienteEnviaTCP(conexionServidor,null);
-        clienteEnviaTCP.enviar(mensajeLatencia);
+        clienteEnviaTCP.enviar(frame);
     }
 
     @Override
@@ -182,6 +185,13 @@ public class Cliente implements EnviadorMensaje, ReceptorMensaje {
         while (mensajeLatencia == null) {
             progresoTransferencia.setLatencia(0);
         }
+        System.out.println("Me llegó la respuesta de la latencia");
+        System.out.println("Tiempo inicial: " + mensajeLatencia.getTiempoInicial());
+        System.out.println("Tiempo final: " + mensajeLatencia.getTiempoFinal());
+        System.out.println("Diferencia: " +
+                ((mensajeLatencia.getTiempoFinal()) - mensajeLatencia.getTiempoInicial()));
+        System.out.println("Bytes enviados: " + mensajeLatencia.getCantBytes());
+        System.out.println("TAMANO DEL ARCHIVO A ENVIAR: " + tamanoArchivo);
         long bytesPorSeg = mensajeLatencia.getCantBytes() / (mensajeLatencia.getLatencia() / 1000);
         // Se pone la latencia en segundos.
         progresoTransferencia.setLatencia((tamanoArchivo / bytesPorSeg)) ;

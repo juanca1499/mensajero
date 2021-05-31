@@ -7,6 +7,7 @@ public class MensajeLatencia extends Mensaje implements Serializable {
     private long tiempoInicial;
     private long tiempoFinal;
     private long cantBytes;
+    private long extraBytes;
     private boolean pong;
 
     public MensajeLatencia() { }
@@ -42,6 +43,14 @@ public class MensajeLatencia extends Mensaje implements Serializable {
 
     public long getLatencia() {
         return tiempoFinal - tiempoInicial;
+    }
+
+    public long getExtraBytes() {
+        return extraBytes;
+    }
+
+    public void setExtraBytes(long extraBytes) {
+        this.extraBytes = extraBytes;
     }
 
     public boolean isPong() {
