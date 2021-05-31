@@ -37,7 +37,6 @@ public class Cliente implements EnviadorMensaje, ReceptorMensaje {
     private Progreso progresoTransferencia;
     private boolean transferenciaEnProgreso;
     private MensajeLatencia mensajeLatencia;
-    private ContadorTiempo contadorTiempo;
 
     public Cliente(ConexionCliente conexionCliente) throws Exception {
         this.conexionCliente = conexionCliente;
@@ -53,7 +52,6 @@ public class Cliente implements EnviadorMensaje, ReceptorMensaje {
     private void inicializarServicios() throws Exception {
         clienteEnviaUDP = new ClienteEnviaUDP(socketUDP,conexionServidor);
         clienteEscuchaUDP = new ClienteEscuchaUDP(socketUDP,this);
-        clienteEnviaTCP = new ClienteEnviaTCP(conexionServidor);
         clienteEscuchaTCP = new ClienteEscuchaTCP(conexionCliente,this);
         clienteEscuchaUDP.start();
         clienteEscuchaTCP.start();
@@ -91,7 +89,7 @@ public class Cliente implements EnviadorMensaje, ReceptorMensaje {
             calcularLatenciaArchivo(bytesArchivo.length);
             fileInput.read(bytesArchivo);
             archivo.setBytes(bytesArchivo);
-            clienteEnviaTCP.enviar(archivo);
+            new ClienteEnviaTCP(conexionServidor,archivo).start();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -127,7 +125,7 @@ public class Cliente implements EnviadorMensaje, ReceptorMensaje {
         } else {
             frame.setDestino("Juca");
         }
-        clienteEnviaTCP.enviar(frame);
+        new ClienteEnviaTCP(conexionServidor,frame).start();
     }
 
     @Override
@@ -174,7 +172,7 @@ public class Cliente implements EnviadorMensaje, ReceptorMensaje {
         mensajeLatencia.setTiempoInicial(System.currentTimeMillis());
         long cantBytes = Serializador.serializar(mensajeLatencia).length;
         mensajeLatencia.setCantBytes(cantBytes);
-        clienteEnviaTCP.enviar(mensajeLatencia);
+        new ClienteEnviaTCP(conexionServidor,mensajeLatencia).start();
     }
 
     private void calcularLatenciaArchivo(long tamanoArchivo) {
@@ -204,7 +202,7 @@ public class Cliente implements EnviadorMensaje, ReceptorMensaje {
             String nuevoOrigen = mensajeLatencia.getDestino();
             mensajeLatencia.setOrigen(nuevoOrigen);
             mensajeLatencia.setDestino(nuevoDestino);
-            clienteEnviaTCP.enviar(mensajeLatencia);
+            new ClienteEnviaTCP(conexionServidor,mensajeLatencia).start();
         }
     }
 

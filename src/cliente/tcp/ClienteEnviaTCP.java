@@ -11,19 +11,26 @@ import java.io.*;
 // importar la libreria java.io
  
 // declararamos la clase clientetcp
-public class ClienteEnviaTCP {
+public class ClienteEnviaTCP extends Thread {
     // declaramos un objeto socket para realizar la comunicación
     protected Socket socket;
     protected final int PUERTO_SERVER;
     protected final String IP_SERVIDOR;
     private OutputStream outputStream;
+    private Mensaje mensaje;
     
-    public ClienteEnviaTCP(ConexionServidor conexionServidor) {
+    public ClienteEnviaTCP(ConexionServidor conexionServidor, Mensaje mensaje) {
         PUERTO_SERVER = conexionServidor.getPuertoTCP();
         IP_SERVIDOR = conexionServidor.getIp();
+        this.mensaje = mensaje;
     }
-    
-    public void enviar(Mensaje mensaje) {
+
+    @Override
+    public void run() {
+        enviar(mensaje);
+    }
+
+    private void enviar(Mensaje mensaje) {
         // Declaramos un bloque try y catch para controlar la ejecución del subprograma
         try {
             socket = new Socket(IP_SERVIDOR,PUERTO_SERVER);
