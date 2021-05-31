@@ -35,12 +35,16 @@ public class Cliente implements EnviadorMensaje, ReceptorMensaje {
     private DatagramSocket socketUDP;
 
     private Progreso progresoTransferencia;
+    private boolean transferenciaEnProgreso;
+    private MensajeLatencia mensajeLatencia;
     private ContadorTiempo contadorTiempo;
 
     public Cliente(ConexionCliente conexionCliente) throws Exception {
         this.conexionCliente = conexionCliente;
         this.nombreUsuario = conexionCliente.getUsuario();
         this.socketUDP = new DatagramSocket(conexionCliente.getPuertoUDP());
+        transferenciaEnProgreso = false;
+        mensajeLatencia = null;
         clienteGUI = new MensajeroClienteGUI(nombreUsuario,this);
         clienteGUI.setVisible(true);
         impresora = clienteGUI;
@@ -77,15 +81,16 @@ public class Cliente implements EnviadorMensaje, ReceptorMensaje {
             archivo.setDestino("Juca");
         }
         try {
-            progresoTransferencia = new Progreso();
             // Se cálcula la latencia hacia el cliente para estimar el tiempo de envío
+            transferenciaEnProgreso = true;
+            progresoTransferencia = new Progreso();
             calcularLatencia(archivo.getOrigen(),archivo.getDestino());
+            new ContadorTiempo().start();
             FileInputStream fileInput = new FileInputStream(archivo.getArchivo());
             byte[] bytesArchivo = new byte[fileInput.available()];
+            calcularLatenciaArchivo(bytesArchivo.length);
             fileInput.read(bytesArchivo);
             archivo.setBytes(bytesArchivo);
-            contadorTiempo = new ContadorTiempo();
-            contadorTiempo.start();
             clienteEnviaTCP.enviar(archivo);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -164,7 +169,7 @@ public class Cliente implements EnviadorMensaje, ReceptorMensaje {
         inicializarServicios();
     }
 
-    public void calcularLatencia(String origen, String destino) {
+    private void calcularLatencia(String origen, String destino) {
         MensajeLatencia mensajeLatencia = new MensajeLatencia(origen,destino);
         mensajeLatencia.setTiempoInicial(System.currentTimeMillis());
         long cantBytes = Serializador.serializar(mensajeLatencia).length;
@@ -172,23 +177,34 @@ public class Cliente implements EnviadorMensaje, ReceptorMensaje {
         clienteEnviaTCP.enviar(mensajeLatencia);
     }
 
+    private void calcularLatenciaArchivo(long tamanoArchivo) {
+        // En base a la latencia de prueba obtenida, se calcula el tiempo estimado
+        // para el archivo elegido.
+        while (mensajeLatencia == null) {
+            progresoTransferencia.setLatencia(0);
+        }
+        long bytesPorSeg = mensajeLatencia.getCantBytes() / (mensajeLatencia.getLatencia() / 1000);
+        // Se pone la latencia en segundos.
+        progresoTransferencia.setLatencia((tamanoArchivo / bytesPorSeg)) ;
+    }
+
     @Override
-    public void recibirLatencia(MensajeLatencia latencia) {
-        if(latencia.isPong()) {
+    public void recibirLatencia(MensajeLatencia mensajeLatencia) {
+        if(mensajeLatencia.isPong()) {
             // El mensaje de latencia llegó de regresó al cliente que lo solicitó.
-            progresoTransferencia.setLatencia(latencia.getLatencia());
+            this.mensajeLatencia = mensajeLatencia;
             impresora.imprimirProgreso(progresoTransferencia);
         } else {
             // El mensaje de latencia llegó al detino que necesitaba alcanzar y ahora
             // tiene que regresar al que lo solicitó.
             System.out.println("Me llegó un mensaje para solicitar la latencia!!! :)");
-            latencia.setTiempoFinal(System.currentTimeMillis());
-            latencia.setPong(true);
-            String nuevoDestino = latencia.getOrigen();
-            String nuevoOrigen = latencia.getDestino();
-            latencia.setOrigen(nuevoOrigen);
-            latencia.setDestino(nuevoDestino);
-            clienteEnviaTCP.enviar(latencia);
+            mensajeLatencia.setTiempoFinal(System.currentTimeMillis());
+            mensajeLatencia.setPong(true);
+            String nuevoDestino = mensajeLatencia.getOrigen();
+            String nuevoOrigen = mensajeLatencia.getDestino();
+            mensajeLatencia.setOrigen(nuevoOrigen);
+            mensajeLatencia.setDestino(nuevoDestino);
+            clienteEnviaTCP.enviar(mensajeLatencia);
         }
     }
 
@@ -199,9 +215,10 @@ public class Cliente implements EnviadorMensaje, ReceptorMensaje {
         public ContadorTiempo() {
             tiempoInicio = System.currentTimeMillis();
         }
+
         @Override
         public void run() {
-            while (true) {
+            while (transferenciaEnProgreso) {
                 try {
                     tiempoActual = System.currentTimeMillis();
                     tiempoActual = (tiempoActual - tiempoInicio) / 1000;
@@ -212,6 +229,7 @@ public class Cliente implements EnviadorMensaje, ReceptorMensaje {
                     ex.printStackTrace();
                 }
             }
+            this.interrupt();
         }
     }
 }

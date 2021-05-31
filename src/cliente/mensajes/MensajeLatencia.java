@@ -41,7 +41,7 @@ public class MensajeLatencia extends Mensaje implements Serializable {
     }
 
     public long getLatencia() {
-        return (tiempoFinal - tiempoInicial) / 1000;
+        return tiempoFinal - tiempoInicial;
     }
 
     public boolean isPong() {
