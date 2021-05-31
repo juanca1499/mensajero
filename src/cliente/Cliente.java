@@ -125,7 +125,8 @@ public class Cliente implements EnviadorMensaje, ReceptorMensaje {
         } else {
             frame.setDestino("Juca");
         }
-        new ClienteEnviaTCP(conexionServidor,frame).start();
+        clienteEnviaTCP = new ClienteEnviaTCP(conexionServidor,null);
+        clienteEnviaTCP.enviar(mensajeLatencia);
     }
 
     @Override

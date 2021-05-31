@@ -30,7 +30,7 @@ public class ClienteEnviaTCP extends Thread {
         enviar(mensaje);
     }
 
-    private void enviar(Mensaje mensaje) {
+    public void enviar(Mensaje mensaje) {
         // Declaramos un bloque try y catch para controlar la ejecución del subprograma
         try {
             socket = new Socket(IP_SERVIDOR,PUERTO_SERVER);
